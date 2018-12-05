@@ -46,20 +46,22 @@ public class JsonResponse extends JSON {
         this.page = page;
     }
 
+    //{"a": "Hello", "b": "World"}
+
+
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("JsonResponse [code=");
-        builder.append(code);
-        builder.append(", msg=");
-        builder.append(msg);
-        builder.append(", data=");
-        builder.append(data);
-        builder.append(", page=");
-        builder.append(page);
-        builder.append("]");
-        return builder.toString();
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"code\":");
+        sb.append(code);
+        sb.append(",\"msg\":\"");
+        sb.append(msg).append('\"');
+        sb.append(",\"data\":");
+        sb.append(data);
+        sb.append(",\"page\":");
+        sb.append(page);
+        sb.append('}');
+        return sb.toString();
     }
-
 }
 
