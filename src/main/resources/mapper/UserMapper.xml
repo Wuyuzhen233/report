@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.UserMapper">
+    <resultMap id="UserDTO" type="com.example.report.domain.User">
+        <result column="u_id" jdbcType="INTEGER" property="id" />
+        <result column="u_name" jdbcType="VARCHAR" property="name" />
+        <result column="u_base" jdbcType="VARCHAR" property="base" />
+        <result column="u_phone" jdbcType="VARCHAR" property="phone" />
+        <result column="u_password" jdbcType="VARCHAR" property="password" />
+        <result column="u_role" jdbcType="INTEGER" property="role" />
+        <result column="u_status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <select  id="queryUserByNameAndPassWord" parameterType="java.lang.String"  resultMap="UserDTO">
+        select u_id,u_base,u_name,u_phone,u_password,u_role,u_status from rt_user
+        where u_phone=#{phone} and u_password=#{password} and u_status=11
+    </select>
+
+</mapper>
