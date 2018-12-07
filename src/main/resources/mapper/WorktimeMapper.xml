@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.WorktimeMapper">
+    <!--<parameterMap id="WorktimeDTO" type="com.example.report.domain.Worktime">-->
+        <!--<parameter  javaType="BIGINT" property="wid"/>-->
+        <!--<parameter-->
+    <!--</parameterMap>-->
+
+    <resultMap id="projectDTO" type="com.example.report.domain.DTO.ProjectDTO">
+        <result column="p_id" jdbcType="INTEGER" property="pid"/>
+        <result column="p_name" jdbcType="VARCHAR" property="pname"/>
+        <result column="u_id" jdbcType="INTEGER" property="uid"/>
+        <result column="w_id" jdbcType="BIGINT" property="wid"/>
+        <result column="w_date" jdbcType="VARCHAR" property="wdate"/>
+        <result column="w_project_num" jdbcType="INTEGER" property="projectNum"/>
+        <result column="w_state" jdbcType="INTEGER" property="wstate"/>
+        <result column="u_name" jdbcType="VARCHAR" property="leaderName"/>
+        <result column="w_auditing_date" jdbcType="VARCHAR" property="auditingDate"/>
+        <result column="wd_detail" jdbcType="VARCHAR" property="detail"/>
+    </resultMap>
+
+    <select id="showFailList" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select w_date from rt_worktime where w_state=1 and u_id=#{uid}
+    </select>
+
+    <select id="showProjectList" resultMap="projectDTO">
+        SELECT k.p_id,k.p_name,k.u_id,k.w_id,k.w_date,k.w_project_num,k.w_state,k.u_name,k.w_auditing_date,k.wd_detail
+        FROM
+        (SELECT * from (SELECT a.p_id ,b.p_name FROM rt_up_participant a,rt_project b
+        WHERE a.u_id=#{uid} AND a.p_id=b.p_id AND a.upp_starttime <![CDATA[<=]]> #{date} AND (a.upp_endtime <![CDATA[>=]]> #{date} OR a.upp_endtime="")) p
+        LEFT JOIN
+        (SELECT w.w_id,w.u_id,w.p_id as pid,w.w_date,w.w_project_num,w.w_state,u.u_name,w.w_auditing_date,d.wd_detail
+        FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date="2018/12/05" AND w.w_state <![CDATA[<>]]> 3)
+        e ON p.p_id=e.pid) k where k.u_id=#{uid}
+    </select>
+
+    <update id="updateState" parameterType="java.lang.Integer">
+        UPDATE rt_worktime set w_state=3 where w_id=#{oldwId}
+    </update>
+
+    <insert id="saveWorktimeReporting">
+        INSERT INTO rt_worktime (w_id,u_id,p_id,w_date,w_project_num,w_state) VALUES (#{wid},#{uid},#{pid},#{wdate},#{projectNum},#{wstate})
+    </insert>
+
+
+</mapper>
