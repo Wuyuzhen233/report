@@ -1,5 +1,6 @@
 package com.example.report.service.impl;
 
+import com.example.report.common.utils.IdGenUtils;
 import com.example.report.common.utils.IdGeneratorUtil;
 import com.example.report.domain.DTO.ProjectDTO;
 import com.example.report.domain.Worktime;
@@ -44,7 +45,9 @@ public class WorktimeServiceImp implements WorktimeService {
     public void saveWorktimeReporting(List<Worktime> worktimeList) {
         for(Worktime worktime:worktimeList) {
             try {
-                long wid = IdGeneratorUtil.createID();
+//                long wid = IdGeneratorUtil.createID();
+                IdGenUtils idGenUtils = new IdGenUtils(0,0);
+                long wid = idGenUtils.nextId();
                 worktime.setWid(wid);
             } catch (Exception e) {
                 log.error("创建id异常", e);
