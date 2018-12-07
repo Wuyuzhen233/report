@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.AdminMapper">
+
+    <!--<sql id="Base_Column_List">-->
+    <!--p_id,p_name,p_status,p_desc-->
+    <!--</sql>-->
+    <!--<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List"/>-->
+    <!--from t_menu t-->
+    <!--where id = #{id,jdbcType=INTEGER}-->
+    <!--</select>-->
+
+
+    <insert id="publishProject" parameterType="com.example.report.domain.DTO.ProjectPublishDTO">
+        INSERT INTO rt_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">
+                p_id,
+            </if>
+            <if test="projectName != null">
+                p_name,
+            </if>
+            <if test="projectDesc != null">
+                p_desc,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">
+                #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="projectName != null">
+                #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="projectDesc != null">
+                #{projectDesc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="addUPManager" parameterType="java.util.Map">
+        INSERT INTO rt_up_manager (upm_id, u_id, p_id) VALUES (#{upManagerId}, #{userId}, #{projectId})
+    </insert>
+    <insert id="addUPParticipant" parameterType="java.util.Map">
+        INSERT INTO rt_up_participant (upp_id, u_id, p_id, upp_starttime) VALUES (#{upParticipantId}, #{userId}, #{projectId}, #{startTime})
+    </insert>
+
+    <select id="getProjectTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM rt_project
+    </select>
+    <select id="getUPManagerTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM  rt_up_manager
+    </select>
+    <select id="getUPParticipantTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM  rt_up_participant
+    </select>
+
+    <resultMap id="projectInfoList_sap" type="java.util.Map">
+        <id column="upm_id" property="id" jdbcType="INTEGER" />
+        <result column="p_name" property="ProjectName" jdbcType="VARCHAR"/>
+        <result column="p_name" property="ProjectLeader" jdbcType="VARCHAR"/>
+        <result column="p_name" property="ProjectDesc" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="showAllProject" resultMap="projectInfoList_sap">
+        SELECT
+          upm.upm_id,p.p_name,u.u_name,p.p_desc
+        FROM
+          rt_project p
+        LEFT JOIN rt_up_manager upm ON p.p_id = upm.p_id
+        LEFT JOIN rt_user u ON upm.u_id = u.u_id
+        ORDER BY p.p_status desc
+    </select>
+</mapper>
