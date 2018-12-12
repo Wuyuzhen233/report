@@ -22,9 +22,9 @@ public interface WorktimeService {
 
     List<ProjectDTO> showProjectList(int uid,String date);
 
-    void updateState(List<Integer> oldList);
+    void updateState(List<String> oldList);
 
-    void saveWorktimeReporting(List<Worktime> worktimeList);
+    void saveWorktimeReporting(List<ProjectDTO> worktimeList);
 
     /**
      * 展示当天只读列表内容（即现已经没有权限但提交过的内容）

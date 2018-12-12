@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class NotPassDTO {
     private int uid;
-    private long wid;
+    private String wid;
 }

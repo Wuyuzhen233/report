@@ -123,26 +123,26 @@ public class AuditingController {
 //    }
 
     @GetMapping("/checkAllAuditingMessages")
-    public Result checkAllAuditingMessages(){
+    public Result checkAllAuditingMessages(@RequestBody AuditingMessageDTO auditingMessageDTO){
         //@RequestBody PassDTO passDTO
-        AuditingMessageDTO auditingMessageDTO=new AuditingMessageDTO();
-        auditingMessageDTO.setUid(5);
-        List<Long> passList=new ArrayList();
-        passList.add(1072022444123881472L);
-        passList.add(1072022442764926976L);
-        auditingMessageDTO.setPassList(passList);
-        List<Long> notPassList=new ArrayList();
-        notPassList.add(1072022645949595648L);
-        notPassList.add(1072022647564402688L);
-        auditingMessageDTO.setNotPassList(notPassList);
+//        AuditingMessageDTO auditingMessageDTO=new AuditingMessageDTO();
+//        auditingMessageDTO.setUid(5);
+//        List<Long> passList=new ArrayList();
+//        passList.add(1072022444123881472L);
+//        passList.add(1072022442764926976L);
+//        auditingMessageDTO.setPassList(passList);
+//        List<Long> notPassList=new ArrayList();
+//        notPassList.add(1072022645949595648L);
+//        notPassList.add(1072022647564402688L);
+//        auditingMessageDTO.setNotPassList(notPassList);
 
         String auditingTime= DateUtil.getInstance().getDate_yyyyMMdd();
         int uid=auditingMessageDTO.getUid();
-        for(Long wid:auditingMessageDTO.getPassList()){
-            auditingService.saveAuditingMessages(uid,wid,auditingTime);
+        for(String wid:auditingMessageDTO.getPassList()){
+            auditingService.saveAuditingMessages(uid,Long.parseLong(wid),auditingTime);
         }
-        for(Long wid:auditingMessageDTO.getNotPassList()){
-            auditingService.notPass(uid,wid,auditingTime);
+        for(String wid:auditingMessageDTO.getNotPassList()){
+            auditingService.notPass(uid,Long.parseLong(wid),auditingTime);
         }
         return Result.success(ErrorCode.SUCCESS);
 

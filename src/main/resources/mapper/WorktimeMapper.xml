@@ -31,11 +31,11 @@
         LEFT JOIN
         (SELECT w.w_id,w.u_id,w.p_id as pid,w.w_date,w.w_project_num,w.w_state,u.u_name,w.w_auditing_date,d.wd_detail
         FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date=#{date} AND w.w_state <![CDATA[<>]]> 3)
-        e ON p.p_id=e.pid) k where k.u_id=#{uid}
+        e ON p.p_id=e.pid) k
 
     </select>
 
-    <update id="updateState" parameterType="java.lang.Integer">
+    <update id="updateState" parameterType="java.lang.Long">
         UPDATE rt_worktime set w_state=3 where w_id=#{oldwId}
     </update>
 

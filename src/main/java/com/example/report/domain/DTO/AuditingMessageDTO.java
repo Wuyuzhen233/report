@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class AuditingMessageDTO {
-    private List<Long> passList;
-    private List<Long> notPassList;
+    private List<String> passList;
+    private List<String> notPassList;
     private int uid;
 }

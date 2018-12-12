@@ -7,7 +7,7 @@ public class ProjectDTO {
     private int pid;
     private String pname;
     private int uid;
-    private long wid;
+    private String wid;
     private String wdate;
     private String projectNum;
     private int wstate;
@@ -15,4 +15,5 @@ public class ProjectDTO {
     private String auditingDate;
     private String detail;
     private int status;
+
 }

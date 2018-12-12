@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Worktime {
-    private long wid;
+    private String wid;
     private int uid;
     private int pid;
     private String wdate;
@@ -13,5 +13,6 @@ public class Worktime {
     private int leadeId;
     private String auditingDate;
     private String detail;
+    private int Status;
 
 }

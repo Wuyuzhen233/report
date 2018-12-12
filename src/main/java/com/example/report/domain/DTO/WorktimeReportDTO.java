@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class WorktimeReportDTO {
-    private List oldList;
-    private List<Worktime> worktimeList;
+    private List<String> oldList;
+    private List<ProjectDTO> worktimeList;
 }

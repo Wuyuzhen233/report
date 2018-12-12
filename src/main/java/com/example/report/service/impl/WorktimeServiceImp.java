@@ -35,27 +35,31 @@ public class WorktimeServiceImp implements WorktimeService {
     }
 
     @Override
-    public void updateState(List<Integer> oldList) {
-        for(int oldwId:oldList){
-            worktimeMapper.updateState(oldwId);
+    public void updateState(List<String> oldList) {
+        for(int i=0;i<oldList.size();i++){
+            if(oldList.get(i)!=null){
+                log.info(oldList.get(i));
+                worktimeMapper.updateState(Long.parseLong(oldList.get(i)));
+            }
         }
     }
 
     @Override
-    public void saveWorktimeReporting(List<Worktime> worktimeList) {
-        for(Worktime worktime:worktimeList) {
+    public void saveWorktimeReporting(List<ProjectDTO> worktimeList) {
+        for(ProjectDTO worktime:worktimeList) {
             try {
 //                long wid = IdGeneratorUtil.createID();
                 IdGenUtils idGenUtils = new IdGenUtils(0,0);
                 long wid = idGenUtils.nextId();
-                worktime.setWid(wid);
+                worktime.setWid(String.valueOf(wid));
             } catch (Exception e) {
                 log.error("创建id异常", e);
             }
             worktime.setWstate(2);
-            worktimeMapper.saveWorktimeReporting(worktime.getWid(),worktime.getUid(),worktime.getPid(),worktime.getWdate(),worktime.getProjectNum(),worktime.getWstate());
-            worktimeDetailMapper.saveDetail(worktime.getWid(),worktime.getDetail());
-            log.info("调用一次");
+            worktimeMapper.saveWorktimeReporting(Long.parseLong(worktime.getWid()),worktime.getUid(),worktime.getPid(),worktime.getWdate(),Integer.parseInt(worktime.getProjectNum()),worktime.getWstate());
+            log.info(worktime.getWid()+","+worktime.getUid()+","+worktime.getPid()+","+worktime.getWdate()+","+Integer.parseInt(worktime.getProjectNum())+","+worktime.getWstate());
+            log.info("detail:"+worktime.getWid()+","+worktime.getDetail());
+            worktimeDetailMapper.saveDetail(Long.parseLong(worktime.getWid()),worktime.getDetail());
         }
 
 

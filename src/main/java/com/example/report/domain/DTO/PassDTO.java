@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class PassDTO {
-    private List<Long> passList;
+    private List<String> passList;
     private int uid;
 }

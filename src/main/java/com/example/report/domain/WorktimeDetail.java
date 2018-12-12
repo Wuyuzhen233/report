@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class WorktimeDetail{
-    private long wid;
+    private String wid;
     private String wdDetail;
 }

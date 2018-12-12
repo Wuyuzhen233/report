@@ -12,7 +12,7 @@ public interface WorktimeMapper extends Mapper<Worktime> {
 
     List<ProjectDTO> showProjectList(@Param("uid") int uid,@Param("date") String data);
 
-    void updateState(@Param("oldwId") int oldwId);
+    void updateState(@Param("oldwId") long oldwId);
 
     void saveWorktimeReporting(@Param("wid")long wid,@Param("uid") int uid,@Param("pid") int pid,@Param("wdate") String wdate,@Param("projectNum") int projectNum,@Param("wstate") int wstate);
 
