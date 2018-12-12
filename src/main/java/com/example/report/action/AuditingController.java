@@ -5,6 +5,7 @@ package com.example.report.action;
 import com.example.report.common.enums.ErrorCode;
 import com.example.report.common.utils.DateUtil;
 import com.example.report.domain.DTO.*;
+import com.example.report.domain.User;
 import com.example.report.helper.Result;
 import com.example.report.service.AuditingService;
 import lombok.Data;
@@ -26,47 +27,50 @@ public class AuditingController {
 
 
     @PostMapping("/showAllProject")
-    public Result showAllProject(@RequestParam int uid) {
+    public Result showAllProject(@RequestBody  User user) {
         //@RequestParam int uid
         //int uid=2;
-        List<AudtingProjectDTO> projectList=auditingService.showAllProject(uid);
+        List<AudtingProjectDTO> projectList=auditingService.showAllProject(user.getUserId());
+        log.info(projectList.toString());
         return  Result.success(projectList);
     }
 
-    @GetMapping("/showAllMessages")
-    public Result showAllMessages(){
+    @PostMapping("/showAllMessages")
+    public Result showAllMessages(@RequestBody AudtingMangerInfoDTO audtingMangerInfoDTO){
         //@RequestBody AudtingMangerInfoDTO audtingMangerInfoDTO
-        AudtingMangerInfoDTO audtingMangerInfoDTO=new AudtingMangerInfoDTO();
-        audtingMangerInfoDTO.setP_id(1);
-        audtingMangerInfoDTO.setU_id(2);
+//        AudtingMangerInfoDTO audtingMangerInfoDTO=new AudtingMangerInfoDTO();
+//        audtingMangerInfoDTO.setP_id(1);
+//        audtingMangerInfoDTO.setU_id(2);
         String date=DateUtil.getInstance().getDate_yyyyMMdd();
         MessageDTO messageDTO=new MessageDTO();
-        List<String> dateList=auditingService.showAllDate(audtingMangerInfoDTO.getU_id(),
-                audtingMangerInfoDTO.getP_id(),date);
-        List<ParticipantDTO> participantDTOList=auditingService.showAllParticipant(audtingMangerInfoDTO.getP_id());
-        List<ProjectDTO> participantWorktime=auditingService.showAllWorktime(audtingMangerInfoDTO.getP_id());
+        List<String> dateList=auditingService.showAllDate(audtingMangerInfoDTO.getUid(),
+                audtingMangerInfoDTO.getPid(),date);
+        List<ParticipantDTO> participantDTOList=auditingService.showAllParticipant(audtingMangerInfoDTO.getPid());
+        List<ProjectDTO> participantWorktime=auditingService.showAllWorktime(audtingMangerInfoDTO.getPid());
         messageDTO.setDateList(dateList);
         messageDTO.setParticipantDTOList(participantDTOList);
         messageDTO.setParticipantWorktime(participantWorktime);
+        log.info(messageDTO.toString());
         return Result.success(messageDTO);
     }
-    @GetMapping("/showAllAuditing")
-    public Result showAllAuditing(){
+    @PostMapping("/showAllAuditing")
+    public Result showAllAuditing(@RequestBody AudtingMangerInfoDTO audtingMangerInfoDTO){
         //@RequestBody AudtingMangerInfoDTO audtingMangerInfoDTO
-        AudtingMangerInfoDTO audtingMangerInfoDTO=new AudtingMangerInfoDTO();
-        audtingMangerInfoDTO.setP_id(5);
-        audtingMangerInfoDTO.setU_id(4);
+//        AudtingMangerInfoDTO audtingMangerInfoDTO=new AudtingMangerInfoDTO();
+//        audtingMangerInfoDTO.setP_id(5);
+//        audtingMangerInfoDTO.setU_id(4);
+        log.info("WWWWWWWWWW"+audtingMangerInfoDTO.toString());
         MessageDTO messageDTO=new MessageDTO();
         List<ProjectDTO> participantWorktime=new LinkedList<>();
-        List<String> dateList=auditingService.showDateList(audtingMangerInfoDTO.getU_id(),
-                audtingMangerInfoDTO.getP_id());
-        List<ParticipantDTO> participantList=auditingService.showParticipant(audtingMangerInfoDTO.getP_id());
+        List<String> dateList=auditingService.showDateList(audtingMangerInfoDTO.getUid(),
+                audtingMangerInfoDTO.getPid());
+        List<ParticipantDTO> participantList=auditingService.showParticipant(audtingMangerInfoDTO.getPid());
         log.info("dateList:"+dateList.toString());
         log.info("size"+dateList.size());
         if(dateList.size()==0){
             participantList=null;
         }else{
-            participantWorktime=auditingService.showWorktime(audtingMangerInfoDTO.getP_id(),dateList.get(0),dateList.get(dateList.size()-1));
+            participantWorktime=auditingService.showWorktime(audtingMangerInfoDTO.getPid(),dateList.get(0),dateList.get(dateList.size()-1));
         }
         messageDTO.setDateList(dateList);
         messageDTO.setParticipantDTOList(participantList);
@@ -74,10 +78,12 @@ public class AuditingController {
         return Result.success(messageDTO);
     }
 
-    @GetMapping("/showAuthority")
-    public Result showAuthority(){
+    @PostMapping("/showAuthority")
+    public Result showAuthority(@RequestBody User user){
+        log.info("******:"+user.getUserId());
         //@RequestParam int uid
-        int uid=5;
+        //int uid=5;
+        int uid=user.getUserId();
         int userNum=auditingService.showAuthority(uid);
         if(userNum!=0){
             return Result.success(ErrorCode.SUCCESS);
@@ -122,7 +128,7 @@ public class AuditingController {
 //
 //    }
 
-    @GetMapping("/checkAllAuditingMessages")
+    @PostMapping("/checkAllAuditingMessages")
     public Result checkAllAuditingMessages(@RequestBody AuditingMessageDTO auditingMessageDTO){
         //@RequestBody PassDTO passDTO
 //        AuditingMessageDTO auditingMessageDTO=new AuditingMessageDTO();

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AudtingMangerInfoDTO {
-    private int u_id;
-    private int p_id;
+    private int uid;
+    private int pid;
 
 }
