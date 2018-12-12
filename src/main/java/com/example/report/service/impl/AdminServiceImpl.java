@@ -5,7 +5,7 @@ import com.example.report.domain.DTO.ProjectPublishDTO;
 import com.example.report.helper.Result;
 import com.example.report.mapper.AdminMapper;
 import com.example.report.service.AdminService;
-import com.example.report.support.DateUtil;
+import com.example.report.common.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

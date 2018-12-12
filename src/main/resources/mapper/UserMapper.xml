@@ -16,7 +16,7 @@
         FROM
           rt_user
         WHERE
-          u_phone=#{phone} and u_password=#{password} and u_status=11
+          u_phone=#{phone} and u_password=#{password} and u_status=20
     </select>
     <select id="findUserIdByPhonePwd" parameterType="java.util.Map" resultType="java.lang.String">
         SELECT u_id FROM rt_user WHERE u_phone = #{phone} AND u_password = #{oldPassword}

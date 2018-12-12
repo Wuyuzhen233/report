@@ -16,6 +16,7 @@ public interface WorktimeService {
     /**
      * 展示当天的所有项目及其信息
      * @param uid
+     * @param date
      * @return
      */
 
@@ -24,5 +25,13 @@ public interface WorktimeService {
     void updateState(List<Integer> oldList);
 
     void saveWorktimeReporting(List<Worktime> worktimeList);
+
+    /**
+     * 展示当天只读列表内容（即现已经没有权限但提交过的内容）
+     * @param uid
+     * @param date
+     * @return
+     */
+    List<ProjectDTO> showOnlyRead(int uid,String date);
 
 }

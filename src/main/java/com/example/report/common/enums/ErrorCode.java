@@ -36,7 +36,11 @@ public enum ErrorCode {
     /**
      * 入参不完整
      */
-    PARAMS_INCOMPLETE(1005);
+    PARAMS_INCOMPLETE(1005),
+    /**
+     * 没有权限
+     */
+    NOT_HAVE_AUTHORITY(1006);
 
     private int value;
 

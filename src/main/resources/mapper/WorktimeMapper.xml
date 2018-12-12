@@ -27,11 +27,12 @@
         SELECT k.p_id,k.p_name,k.u_id,k.w_id,k.w_date,k.w_project_num,k.w_state,k.u_name,k.w_auditing_date,k.wd_detail
         FROM
         (SELECT * from (SELECT a.p_id ,b.p_name FROM rt_up_participant a,rt_project b
-        WHERE a.u_id=#{uid} AND a.p_id=b.p_id AND a.upp_starttime <![CDATA[<=]]> #{date} AND (a.upp_endtime <![CDATA[>=]]> #{date} OR a.upp_endtime="")) p
+        WHERE a.u_id=#{uid} AND a.p_id=b.p_id AND a.upp_status=1) p
         LEFT JOIN
         (SELECT w.w_id,w.u_id,w.p_id as pid,w.w_date,w.w_project_num,w.w_state,u.u_name,w.w_auditing_date,d.wd_detail
-        FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date="2018/12/05" AND w.w_state <![CDATA[<>]]> 3)
+        FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date=#{date} AND w.w_state <![CDATA[<>]]> 3)
         e ON p.p_id=e.pid) k where k.u_id=#{uid}
+
     </select>
 
     <update id="updateState" parameterType="java.lang.Integer">
@@ -42,5 +43,34 @@
         INSERT INTO rt_worktime (w_id,u_id,p_id,w_date,w_project_num,w_state) VALUES (#{wid},#{uid},#{pid},#{wdate},#{projectNum},#{wstate})
     </insert>
 
+    <select id="showOnlyRead" resultMap="projectDTO">
+        SELECT w.p_id,p.p_name,w.u_id,w.w_id,w.w_date,w.w_project_num,w.w_state,u.u_name,w.w_auditing_date,d.wd_detail
+        FROM rt_user u,rt_project p,rt_worktime w,rt_worktime_detail d,rt_up_participant upp
+        where w.p_id=p.p_id AND w.w_leader_id=u.u_id AND w.w_id=d.w_id AND upp.p_id=w.p_id and upp.u_id=w.u_id AND upp.upp_status=0
+        AND w.w_state<![CDATA[<>]]>3 AND w.u_id=#{uid} AND w.w_date=#{date}
+
+    </select>
+
+    <select id="showAllWorktime" resultMap="projectDTO">
+        select w.w_id,w.u_id,w.p_id,w.w_date,w.w_project_num,w.w_state,d.wd_detail from rt_worktime w,rt_worktime_detail d
+        where w.w_id=d.w_id and p_id=#{pid} and w_state <![CDATA[<>]]> 3 order by  w.u_id and w.w_date
+    </select>
+
+    <select id="showDateList" resultType="java.lang.String">
+        select DISTINCT(w_date) wdate from rt_worktime WHERE w_state=2 and p_id=#{pid} ORDER BY wdate ASC
+    </select>
+
+    <select id="showWorktime" resultMap="projectDTO">
+        select w.w_id,w.u_id,w.p_id,w.w_date,w.w_project_num,w.w_state,d.wd_detail from rt_worktime w,rt_worktime_detail d where w.w_id=d.w_id and p_id=#{pid} and
+        #{starttime} <![CDATA[<=]]> w.w_date and w.w_date <![CDATA[<=]]> #{endtime} and w_state <![CDATA[<>]]> 3 order by  w.u_id and w.w_date
+    </select>
+
+    <update id="notPass">
+        update rt_worktime set w_leader_id=#{uid},w_auditing_date=#{auditingTime},w_state=0 where w_id=#{wid}
+    </update>
+
+    <update id="saveAuditingMessages">
+        update rt_worktime set w_leader_id=#{uid},w_auditing_date=#{auditingTime},w_state=1 where w_id=#{wid}
+    </update>
 
 </mapper>

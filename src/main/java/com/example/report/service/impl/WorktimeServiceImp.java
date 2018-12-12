@@ -61,5 +61,10 @@ public class WorktimeServiceImp implements WorktimeService {
 
     }
 
+    @Override
+    public List<ProjectDTO> showOnlyRead(int uid, String date) {
+        return worktimeMapper.showOnlyRead(uid, date);
+    }
+
 
 }
