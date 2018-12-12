@@ -14,5 +14,21 @@ public interface AdminService {
 
     List<Map<String, String>> showAllProject();
 
-    void updateProjectStatus();
+    List<Map<String, String>> showAllUser();
+
+    List<Map<String, String>> showAllUserInfo();
+
+    Result updateProjectStatus(Map<String, String> projectStatusMap);
+
+    Result updateProjectNameDetail(Map<String, String> projectInfo);
+
+    Result cheakLeaderIsExist(Map<String, String> addLeaderParamMap);
+
+    Result delLeaderInProject(Map<String, String> delLeaderParamMap);
+
+    Result saveUser(Map<String, String> userInfoMap);
+
+    Result delUser(String uid);
+
+    Result restPassword(String uid);
 }

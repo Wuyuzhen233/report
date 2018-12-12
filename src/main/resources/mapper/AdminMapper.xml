@@ -56,18 +56,108 @@
     </select>
 
     <resultMap id="projectInfoList_sap" type="java.util.Map">
-        <id column="upm_id" property="id" jdbcType="INTEGER" />
-        <result column="p_name" property="ProjectName" jdbcType="VARCHAR"/>
-        <result column="p_name" property="ProjectLeader" jdbcType="VARCHAR"/>
-        <result column="p_name" property="ProjectDesc" jdbcType="VARCHAR"/>
+        <id column="p_id" property="p_id" jdbcType="INTEGER"/>
+        <result column="p_name" property="projectName" jdbcType="VARCHAR"/>
+        <result column="p_desc" property="projectDesc" jdbcType="VARCHAR"/>
+        <result column="upm_id" property="upm_id" jdbcType="INTEGER"/>
+        <result column="u_id" property="u_id" jdbcType="INTEGER"/>
+        <result column="u_name" property="projectLeader" jdbcType="VARCHAR"/>
+        <result column="upp_id" property="upp_id" jdbcType="INTEGER"/>
     </resultMap>
     <select id="showAllProject" resultMap="projectInfoList_sap">
         SELECT
-          upm.upm_id,p.p_name,u.u_name,p.p_desc
+            p.p_id,
+            p.p_name,
+            p.p_desc,
+            upm.upm_id,
+            upm.u_id,
+            u.u_name,
+            upp.upp_id
         FROM
-          rt_project p
-        LEFT JOIN rt_up_manager upm ON p.p_id = upm.p_id
-        LEFT JOIN rt_user u ON upm.u_id = u.u_id
-        ORDER BY p.p_status desc
+            rt_project p
+            LEFT JOIN rt_up_manager upm ON p.p_id = upm.p_id
+            LEFT JOIN rt_user u ON upm.u_id = u.u_id
+            LEFT JOIN rt_up_participant upp ON u.u_id = upp.u_id
+            AND p.p_id = upp.p_id
+        ORDER BY
+            p.p_status DESC;
     </select>
+    <resultMap id="userList_sau" type="java.util.Map">
+        <id column="u_id" property="u_id" jdbcType="INTEGER"/>
+        <result column="u_name" property="u_name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="showAllUser" resultMap="userList_sau">
+        SELECT u_id, u_name FROM rt_user WHERE u_status = 20;
+    </select>
+    <resultMap id="userInfo_saui" type="java.util.Map">
+        <id column="u_id" property="id" jdbcType="INTEGER"/>
+        <result column="u_base" property="base" jdbcType="VARCHAR"/>
+        <result column="u_name" property="name" jdbcType="VARCHAR"/>
+        <result column="u_phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="u_role" property="role" jdbcType="INTEGER"/>
+        <result column="u_status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="showAllUserInfo" resultMap="userInfo_saui">
+        SELECT u_id, u_base, u_name, u_phone, u_role FROM rt_user WHERE u_status = 20 ORDER BY u_role;
+    </select>
+    <update id="updateProjectStatus" parameterType="java.util.Map">
+        UPDATE rt_project SET p_status = #{status} WHERE p_id = #{pid}
+    </update>
+    <update id="updateUPPStatus" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upp_status = #{status} WHERE p_id = #{pid}
+    </update>
+    <update id="updateUPMStatus" parameterType="java.util.Map">
+        UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid}
+    </update>
+    <update id="updateUPPStatusPersonal" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upm_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
+    </update>
+    <update id="updateUPMStatusPersonal" parameterType="java.util.Map">
+        UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
+    </update>
+    <update id="updateProjectNameDetail" parameterType="java.util.Map">
+        UPDATE rt_project
+        <set>
+            <if test="projectDesc != null">
+                p_desc = #{projectDesc},
+            </if>
+            <if test="projectName != null">
+                p_name = #{projectName},
+            </if>
+        </set>
+        where p_id = #{pid}
+    </update>
+    <resultMap id="userInfo_clie" type="java.util.Map">
+        <id column="upm_id" property="upmid" jdbcType="INTEGER"/>
+        <result column="u_id" property="uid" jdbcType="INTEGER"/>
+        <result column="p_id" property="pid" jdbcType="INTEGER"/>
+        <result column="upm_status" property="upmstatus" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="checkLeaderIsExist" parameterType="java.util.Map" resultMap="userInfo_clie">
+        SELECT upm_id, u_id, p_id, upm_status FROM rt_up_manager WHERE u_id = #{uid} AND p_id = #{pid}
+    </select>
+    <update id="zeroLeaderInUPM" parameterType="java.util.Map">
+        UPDATE rt_up_manager SET upm_status = 0 WHERE p_id = #{pid} AND u_id = #{uid}
+    </update>
+    <update id="zeroLeaderInUPP" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upp_status = 0 AND upp_endtime = #{endTime} WHERE p_id = #{pid} AND u_id = #{uid}
+    </update>
+    <select id="getUserTotalNum" resultType="java.lang.Integer">
+         SELECT COUNT(*) FROM rt_user
+    </select>
+    <insert id="saveUser" parameterType="java.util.Map">
+        INSERT INTO rt_user(u_id, u_base, u_name, u_phone) VALUES (#{u_id}, #{userBase}, #{userName}, #{userPhone})
+    </insert>
+    <update id="delUser" parameterType="java.lang.String">
+        UPDATE rt_user SET u_status = 21 WHERE u_id = #{uid}
+    </update>
+    <update id="delUserInUPM" parameterType="java.lang.String">
+        UPDATE rt_up_manager SET upm_status = 0 WHERE u_id = #{uid}
+    </update>
+    <update id="delUserInUPP" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upp_status = 0 AND upp_endtime = #{endTime} WHERE u_id = #{uid}
+    </update>
+    <update id="restPassword" parameterType="java.lang.String">
+        UPDATE rt_user SET u_password = 123456 WHERE u_id = #{uid}
+    </update>
 </mapper>
