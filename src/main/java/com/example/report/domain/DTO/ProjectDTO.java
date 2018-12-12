@@ -14,4 +14,5 @@ public class ProjectDTO {
     private String leaderName;
     private String auditingDate;
     private String detail;
+    private int status;
 }

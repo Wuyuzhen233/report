@@ -25,6 +25,7 @@ public class LoginController {
      */
     @PostMapping("/login")
     public Result login(@RequestBody UserLoginDTO userLoginDTO) {
+        log.info("success!!!!");
         if (null == userLoginDTO) {
             return Result.failed(ErrorCode.LOGIN_INFO_INCOMPLETE, "登录信息不完整");
         }
@@ -36,6 +37,7 @@ public class LoginController {
             if (null == user) {
                 return Result.failed(ErrorCode.USER_NOT_EXISTS, "用户密码错误或用户不存在");
             }
+            log.info("userinfo"+user);
             return Result.success(user);
         } catch (Exception e) {
             log.error("用户手机号密码登录异常{}", e);

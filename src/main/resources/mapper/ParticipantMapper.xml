@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.ParticipantMapper">
+    <select id="showAllParticipant" parameterType="java.lang.Integer" resultType="java.util.Map">
+        select upp.u_id as uid,u.u_name as uname from rt_up_participant upp,rt_user u where u.u_id=upp.u_id AND upp.p_id=#{pid}
+    </select>
+    <select id="showParticipant" parameterType="java.lang.Integer" resultType="java.util.Map">
+        select DISTINCT(w.u_id) as uid,u.u_name as uname from rt_worktime w,rt_user u WHERE w.p_id=#{pid} and w.w_state=2 and w.u_id=u.u_id
+    </select>
+
+</mapper>

@@ -15,4 +15,18 @@ public interface WorktimeMapper extends Mapper<Worktime> {
     void updateState(@Param("oldwId") int oldwId);
 
     void saveWorktimeReporting(@Param("wid")long wid,@Param("uid") int uid,@Param("pid") int pid,@Param("wdate") String wdate,@Param("projectNum") int projectNum,@Param("wstate") int wstate);
+
+    List<ProjectDTO> showOnlyRead(@Param("uid") int uid,@Param("date") String date);
+
+    List<ProjectDTO> showAllWorktime(@Param("pid") int pid);
+
+    List<String> showDateList(@Param("pid") int pid);
+
+    List<ProjectDTO> showWorktime(@Param("pid") int pid,@Param("starttime") String starttime,@Param("endtime") String endtime);
+
+    void notPass(@Param("uid") int uid,@Param("wid") long wid,@Param("auditingTime") String auditingTime);
+
+    void saveAuditingMessages(@Param("uid") int uid,@Param("wid") long wid,@Param("auditingTime") String auditingTime);
+
 }
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.ManagerMapper">
+    <resultMap id="AudtingProjectDTO" type="com.example.report.domain.DTO.AudtingProjectDTO">
+        <id column="upm_id" jdbcType="INTEGER" property="upm_id"/>
+        <result column="p_id" jdbcType="INTEGER" property="pid"/>
+        <result column="p_name" jdbcType="VARCHAR" property="pname"/>
+    </resultMap>
+    <select id="showAllProject" resultMap="AudtingProjectDTO">
+        SELECT a.upm_id,a.p_id,b.p_name FROM rt_up_manager a,rt_project b WHERE a.p_id=b.p_id AND b.p_status=1 AND a.u_id=#{uid}
+    </select>
+
+    <select id="showAllDate" resultType="java.lang.String">
+        SELECT w_date FROM rt_worktime WHERE p_id=#{pid}
+    </select>
+
+    <select id="showAuthority" resultType="java.lang.Integer">
+        select count(*) FROM rt_up_manager where u_id=#{uid} and upm_status=1
+    </select>
+</mapper>
