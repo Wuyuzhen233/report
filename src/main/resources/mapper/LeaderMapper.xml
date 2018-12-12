@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.report.mapper.LeaderMapper">
+	<resultMap id="projectInfo_sap" type="java.util.Map">
+		<id column="upm_id" property="upm_id" jdbcType="INTEGER"/>
+		<result column="u_id" property="u_id" jdbcType="INTEGER"/>
+		<result column="u_name" property="u_name" jdbcType="VARCHAR"/>
+		<result column="p_id" property="p_id" jdbcType="INTEGER"/>
+		<result column="p_name" property="p_name" jdbcType="VARCHAR"/>
+	</resultMap>
+    <select id="showAllProject" parameterType="java.lang.String" resultMap="projectInfo_sap">
+        SELECT
+			upm.upm_id,
+			upm.u_id,
+			u.u_name,
+			p.p_id,
+			p.p_name
+		FROM
+			rt_up_manager upm
+			LEFT JOIN rt_project p ON upm.p_id = p.p_id
+			LEFT JOIN rt_user u ON upm.u_id = u.u_id
+		WHERE
+			upm.p_id IN ( SELECT upm.p_id FROM rt_up_manager upm WHERE u_id = #{uid} )
+    </select>
+	<select id="getAllParticipants" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			u.u_id,
+			u.u_name
+		FROM
+			rt_up_participant upp
+			LEFT JOIN rt_user u ON upp.u_id = u.u_id
+		WHERE
+			upp.p_id = #{pid};
+	</select>
+	<resultMap id="memberInfo_sam" type="java.util.Map">
+		<id column="u_id" property="id" jdbcType="INTEGER"/>
+		<result column="u_name" property="name" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="showAllMember" resultMap="memberInfo_sam">
+		SELECT u_id, u_name FROM rt_user WHERE u_status = 20
+	</select>
+	<resultMap id="userInfo_clie" type="java.util.Map">
+		<id column="upm_id" property="upmid" jdbcType="INTEGER"/>
+		<result column="u_id" property="uid" jdbcType="INTEGER"/>
+		<result column="p_id" property="pid" jdbcType="INTEGER"/>
+		<result column="upm_status" property="upmstatus" jdbcType="INTEGER"/>
+	</resultMap>
+	<select id="cheakMemberIsExist" parameterType="java.util.Map" resultMap="userInfo_clie">
+        SELECT upp_id, u_id, p_id, upp_status FROM rt_up_participant WHERE u_id = #{uid} AND p_id = #{pid}
+    </select>
+	<select id="getUPParticipantTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM  rt_up_participant
+    </select>
+	<insert id="addUPParticipant" parameterType="java.util.Map">
+        INSERT INTO rt_up_participant (upp_id, u_id, p_id, upp_starttime) VALUES (#{uppid}, #{uid}, #{pid}, #{startTime})
+    </insert>
+	<update id="updateUPPStatusPersonal" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upp_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
+    </update>
+	<update id="delUserInUPP" parameterType="java.util.Map">
+        UPDATE rt_up_participant SET upp_status = 0 AND upp_endtime = #{endTime} WHERE u_id = #{uid} AND p_id = #{pid}
+    </update>
+</mapper>
