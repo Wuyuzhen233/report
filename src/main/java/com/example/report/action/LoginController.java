@@ -19,6 +19,7 @@ public class LoginController {
 
     /**
      * 用户登陆
+     * {"phone":"123","password":"123"}
      *
      * @param userLoginDTO
      * @return
@@ -37,7 +38,7 @@ public class LoginController {
             if (null == user) {
                 return Result.failed(ErrorCode.USER_NOT_EXISTS, "用户密码错误或用户不存在");
             }
-            log.info("userinfo"+user);
+            log.info("userinfo" + user);
             return Result.success(user);
         } catch (Exception e) {
             log.error("用户手机号密码登录异常{}", e);
@@ -47,7 +48,8 @@ public class LoginController {
 
     /**
      * header:Content-Type=application/json
-     * body:{"phone":"1","password":"1","oldPassword":"123"}
+     * body:{"uid":1,"password":"123456","oldPassword":"111222"}
+     *
      * @param userLoginDTO
      * @return
      */
@@ -56,16 +58,16 @@ public class LoginController {
         if (null == userLoginDTO) {
             return Result.failed(ErrorCode.LOGIN_INFO_INCOMPLETE, "登录信息不完整");
         }
-        String phone = userLoginDTO.getPhone();
+        String uid = String.valueOf(userLoginDTO.getUid());
         String newpassword = userLoginDTO.getPassword();
         String oldPassword = userLoginDTO.getOldPassword();
         try {
-            log.info("用户通过手机号密码更改密码。\t手机号：{}\t新密码：{}\t原密码：{}", phone, newpassword, oldPassword);
-            String userId = userService.findUserIdByPhonePwd(phone, oldPassword);
+            log.info("用户通过手机号密码更改密码。\t用户id：{}\t新密码：{}\t原密码：{}", uid, newpassword, oldPassword);
+            String userId = userService.findUserIdByPhonePwd(uid, oldPassword);
             if (null == userId) {
                 return Result.failed(ErrorCode.USER_NOT_EXISTS, "用户密码错误或用户不存在");
             }
-            userService.resetPwd(phone, newpassword, oldPassword);
+            userService.resetPwd(uid, newpassword, oldPassword);
             return Result.success();
         } catch (Exception e) {
             log.error("用户修改密码异常{}", e);

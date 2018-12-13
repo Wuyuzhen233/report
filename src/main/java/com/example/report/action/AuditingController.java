@@ -30,6 +30,7 @@ public class AuditingController {
     public Result showAllProject(@RequestBody  User user) {
         //@RequestParam int uid
         //int uid=2;
+        log.info(user.toString());
         List<AudtingProjectDTO> projectList=auditingService.showAllProject(user.getUserId());
         log.info(projectList.toString());
         return  Result.success(projectList);
@@ -75,6 +76,7 @@ public class AuditingController {
         messageDTO.setDateList(dateList);
         messageDTO.setParticipantDTOList(participantList);
         messageDTO.setParticipantWorktime(participantWorktime);
+        log.info("_____________"+messageDTO);
         return Result.success(messageDTO);
     }
 

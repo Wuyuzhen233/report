@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class LeaderController {
      */
     @PostMapping("showAllProject")
     public Result showAllProject(@RequestBody Map<String, String> paramMap) {
+        log.info("传入参数："+paramMap.toString());
         return leaderService.showAllProject(paramMap);
     }
 
@@ -42,8 +45,33 @@ public class LeaderController {
     @PostMapping("showAllMember")
     public Result showAllMember() {
         List<Map<String, String>> memberInfoList = leaderService.showAllMember();
+        log.info(memberInfoList.toString());
         return Result.success(memberInfoList);
     }
+
+//    @PostMapping("saveAllMember")
+//    public Result saveAllMember(@RequestBody Map<String, String> addMemberParamMap) {
+//        int pid=Integer.parseInt(addMemberParamMap.get("pid"));
+//        int uid=Integer.parseInt(addMemberParamMap.get("uid"));
+//        List<Integer> memberList=null;
+//        //List<Integer> oldList=leaderService.showAllId(pid);
+//        for(int i=0;i<memberList.size();i++){
+//            for(int j=0;j<oldList.size();i++){
+//                if(memberList.get(i)==oldList.get(j)){
+//                    //添加的
+//                    memberList.remove(memberList.get(i));
+//                    //删除的
+//                    oldList.remove(oldList.get(j));
+//                }
+//            }
+//        }
+//        for(int addId:memberList){
+////            Map<String,String> addMemberParamMap=new HashMap<>();
+////            addMemberParamMap.put("uid",)
+//            return leaderService.cheakMemberIsExist(addMemberParamMap);
+//        }
+//        return Result.success();
+//    }
 
     /**
      * 添加成员，区别于admin的增加需要维护upp和upm，此处仅需要对upp维护
@@ -53,7 +81,8 @@ public class LeaderController {
      */
     @PostMapping("addMember")
     public Result addMember(@RequestBody Map<String, String> addMemberParamMap) {
-        if (addMemberParamMap.containsKey("pid") && addMemberParamMap.containsKey("uid")) {
+        log.info("addMemberParamMap:"+addMemberParamMap);
+        if (addMemberParamMap.containsKey("p_id") && addMemberParamMap.containsKey("u_id")) {
             try {
                 return leaderService.cheakMemberIsExist(addMemberParamMap);
             } catch (Exception e) {
@@ -72,7 +101,7 @@ public class LeaderController {
      */
     @PostMapping("delMember")
     public Result delMember(@RequestBody Map<String, String> delMemberParamMap) {
-        if (delMemberParamMap.containsKey("pid") && delMemberParamMap.containsKey("uid")) {
+        if (delMemberParamMap.containsKey("p_id") && delMemberParamMap.containsKey("u_id")) {
             return leaderService.delUser(delMemberParamMap);
         } else {
             return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "缺少必要参数");

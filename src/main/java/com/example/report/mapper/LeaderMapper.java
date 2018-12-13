@@ -1,6 +1,9 @@
 package com.example.report.mapper;
 
+import com.example.report.domain.DTO.UpParticipantDTO;
+import com.example.report.domain.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +15,7 @@ import java.util.Map;
 public interface LeaderMapper {
     List<Map<String, String>> showAllProject(String uid);
 
-    List<Map<String, String>> getAllParticipants(String pid);
+    List<UpParticipantDTO> getAllParticipants(String pid);
 
     List<Map<String, String>> showAllMember();
 
@@ -25,4 +28,6 @@ public interface LeaderMapper {
     void updateUPPStatusPersonal(Map<String, String> uppParamMap);
 
     void delUserInUPP(Map<String, String> map);
+
+
 }

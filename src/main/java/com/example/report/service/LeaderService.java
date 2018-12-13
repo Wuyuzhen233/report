@@ -16,4 +16,5 @@ public interface LeaderService {
     Result cheakMemberIsExist(Map<String, String> addMemberParamMap);
 
     Result delUser(Map<String, String> delMemberParamMap);
+
 }

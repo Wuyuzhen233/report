@@ -2,6 +2,9 @@ package com.example.report.service.impl;
 
 import com.example.report.common.enums.ErrorCode;
 import com.example.report.common.utils.DateUtil;
+import com.example.report.domain.DTO.DealedLeaderInfoDTO;
+import com.example.report.domain.DTO.UpManagerDTO;
+import com.example.report.domain.DTO.UpParticipantDTO;
 import com.example.report.helper.Result;
 import com.example.report.mapper.LeaderMapper;
 import com.example.report.service.LeaderService;
@@ -10,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by aimu on 2018/12/11.
@@ -30,6 +30,7 @@ public class LeaderServiceImpl implements LeaderService {
         try {
             // 对获取到的leaderInfoMapList进行去重
             List<Map<String, String>> leaderInfoMapList = leaderMapper.showAllProject(paramMap.get("uid"));
+            log.info("leaderInfoMapList"+leaderInfoMapList.toString());
             Map<String, String> tag = new HashMap<>();
             for (Map<String, String> leaderInfoMap : leaderInfoMapList) {
                 if (tag.containsKey(String.valueOf(leaderInfoMap.get("p_id")) + ";" + leaderInfoMap.get("p_name"))) {
@@ -38,29 +39,41 @@ public class LeaderServiceImpl implements LeaderService {
                     tag.put(String.valueOf(leaderInfoMap.get("p_id")) + ";" + leaderInfoMap.get("p_name"), String.valueOf(leaderInfoMap.get("upm_id")) + ";" + String.valueOf(leaderInfoMap.get("u_id")) + ";" + leaderInfoMap.get("u_name"));
                 }
             }
-            log.info("###############{}", tag.toString());
+            log.info("###############tag++++++"+ tag.toString());
             // 此处对tag的内容进行stringbuffer的拼接
-            List<Map<String, String>> dealedLeaderInfoList = new ArrayList<>();
+            List<DealedLeaderInfoDTO> dealedLeaderInfoList = new ArrayList<>();
             for (String key : tag.keySet()) {
-                Map<String, String> tmpMap = new HashMap<>();
+                //Map<String, Object> tmpMap = new HashMap<>();
+                DealedLeaderInfoDTO tmpMap = new DealedLeaderInfoDTO();
                 String pid = key.split(";")[0];
-                List<Map<String, String>> participantsInfoList = leaderMapper.getAllParticipants(pid);
-                tmpMap.put("participantsInfoList", participantsInfoList.toString());
-                tmpMap.put("p_id", pid);
-                tmpMap.put("p_name", key.split(";")[1]);
+                List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(pid);
+//                tmpMap.put("participantsInfoList", participantsInfoList.toString());
+//                tmpMap.put("p_id", pid);
+//                tmpMap.put("p_name", key.split(";")[1]);
+                tmpMap.setP_id(pid);
+                tmpMap.setParticipantsInfoList(participantsInfoList);
+                tmpMap.setP_name(key.split(";")[1]);
                 String value = tag.get(key);
                 String[] tmps = value.split(":");
-                StringBuffer sb = new StringBuffer();
-                sb.append("[");
+                List<UpManagerDTO> p_leader=new LinkedList<>();
+                //StringBuffer sb = new StringBuffer();
+                //sb.append("[");
                 for (String tmpValue : tmps) {
-                    sb.append("{");
-                    sb.append("upm_id=" + tmpValue.split(";")[0] + ",");
-                    sb.append("u_id=" + tmpValue.split(";")[1] + ",");
-                    sb.append("u_name=" + tmpValue.split(";")[2]);
-                    sb.append("}");
+                    UpManagerDTO upManager=new UpManagerDTO();
+                    upManager.setU_name(tmpValue.split(";")[2]);
+                    upManager.setU_id(tmpValue.split(";")[1]);
+                    upManager.setUpm_id(tmpValue.split(";")[0] );
+                    p_leader.add(upManager);
+//                    sb.append("{");
+//                    sb.append("upm_id:" + tmpValue.split(";")[0] + ",");
+//                    sb.append("u_id:" + tmpValue.split(";")[1] + ",");
+//                    sb.append("u_name:" + tmpValue.split(";")[2]);
+//                    sb.append("}");
                 }
-                sb.append("]");
-                tmpMap.put("p_leader", sb.toString());
+                //sb.append("]");
+                //tmpMap.put("p_leader", p_leader.toString());
+                //dealedLeaderInfoList.add(tmpMap);
+                tmpMap.setP_leader(p_leader);
                 dealedLeaderInfoList.add(tmpMap);
             }
             log.info("######################### dealedLeaderInfoList:{}", dealedLeaderInfoList);
@@ -81,16 +94,20 @@ public class LeaderServiceImpl implements LeaderService {
     public Result cheakMemberIsExist(Map<String, String> addMemberParamMap) {
         List<Map<String, String>> resMapList = leaderMapper.cheakMemberIsExist(addMemberParamMap);
         int num = resMapList.size();
+        int fistNum=leaderMapper.getUPParticipantTotal();
         if (num == 0) {// 若resMapList长度为零，表示不存在该用户，则需要新增
             int upParticipantId = leaderMapper.getUPParticipantTotal() + 1;
             Map<String, String> uppParamMap = new HashMap<>();
             uppParamMap.put("uppid", String.valueOf(upParticipantId));
-            uppParamMap.put("uid", addMemberParamMap.get("uid"));
-            uppParamMap.put("pid", addMemberParamMap.get("pid"));
+            uppParamMap.put("uid", addMemberParamMap.get("u_id"));
+            uppParamMap.put("pid", addMemberParamMap.get("p_id"));
             uppParamMap.put("startTime", DateUtil.getInstance().getDate_yyyyMMdd());
             leaderMapper.addUPParticipant(uppParamMap);
             log.info("================ LeaderServiceImpl cheakMemberIsExist 为该用户新增upp关系成功");
-            return Result.success();
+
+            List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
+            log.info("participantsInfoList___________________"+participantsInfoList);
+            return Result.success(participantsInfoList);
         } else if (num == 1) {// 若resMapList长度为一，表示该member参与过该项目，则需要改upp的状态
             Map<String, String> uppParamMap = new HashMap<>();
             uppParamMap.put("uid", addMemberParamMap.get("uid"));
@@ -98,7 +115,16 @@ public class LeaderServiceImpl implements LeaderService {
             uppParamMap.put("status", "1");
             leaderMapper.updateUPPStatusPersonal(uppParamMap);
             log.info("================ AdminServiceImpl cheakLeaderIsExist 为改用户更改upp和upm关系成功");
-            return Result.success();
+            int finalNum=leaderMapper.getUPParticipantTotal();
+            if(fistNum==finalNum){
+                List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
+                log.info("participantsInfoList___________________"+participantsInfoList);
+                return Result.failed(ErrorCode.FAIL_DATABASE," 用户已存在",participantsInfoList);
+            }else{
+                List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
+                return Result.success(participantsInfoList);
+            }
+
         } else {
             return Result.failed(ErrorCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
         }
@@ -108,15 +134,21 @@ public class LeaderServiceImpl implements LeaderService {
     @Override
     public Result delUser(Map<String, String> delMemberParamMap) {
         try {
+            log.info("#####################"+delMemberParamMap);
             Map<String, String> map = new HashMap<>();
-            map.put("uid", delMemberParamMap.get("uid"));
-            map.put("pid", delMemberParamMap.get("pid"));
+            map.put("uid", delMemberParamMap.get("u_id"));
+            map.put("pid", delMemberParamMap.get("p_id"));
             map.put("endTime", DateUtil.getInstance().getDate_yyyyMMdd());
             leaderMapper.delUserInUPP(map);
-            return Result.success();
+            List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(delMemberParamMap.get("p_id"));
+            log.info("participantsInfoList___________________"+participantsInfoList);
+            return Result.success(participantsInfoList);
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "删除用户失败");
+            List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(delMemberParamMap.get("p_id"));
+            return Result.failed(ErrorCode.FAIL_DATABASE, "删除用户失败",participantsInfoList);
         }
     }
+
+
 
 }

@@ -1,7 +1,8 @@
 package com.example.report.service.impl;
 
 import com.example.report.common.enums.ErrorCode;
-import com.example.report.domain.DTO.ProjectPublishDTO;
+import com.example.report.domain.DTO.*;
+import com.example.report.domain.User;
 import com.example.report.helper.Result;
 import com.example.report.mapper.AdminMapper;
 import com.example.report.service.AdminService;
@@ -68,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<Map<String, String>> showAllProject() {
+    public List<Map<String,String>> showAllProject() {
         List<Map<String, String>> projectInfoList = adminMapper.showAllProject();
         log.info("================ AdminServiceImpl showAllProject (from db),projectInfoList:{}", projectInfoList);
         /**
@@ -76,6 +77,8 @@ public class AdminServiceImpl implements AdminService {
          * 使用了两次循环，成本是O(2n)，暂时没有想出优化方案，暂定这样。181210wy
          */
         // 通过本次循环，把项目和负责人匹配出来(通过项目id可以得到全部负责人name)
+
+
         Map<String, String> tag1 = new HashMap<>();//K:V = projectId:leader1,leader2,leader3...
         for (Map<String, String> projectInfo : projectInfoList) {
             if (tag1.containsKey(projectInfo.get("p_id"))) {
@@ -87,6 +90,7 @@ public class AdminServiceImpl implements AdminService {
         // 本次循环对除了leaderName不一样的projectInfo去重
         List<Map<String, String>> dealMapList = new ArrayList<>();
         Map<String, String> tag2 = new HashMap<>();
+
         for (Map<String, String> projectInfo : projectInfoList) {
             // 如果项目id重复，跳过；否则把项目的负责人替换成tag1中的负责人
             if (tag2.containsKey(projectInfo.get("p_id"))) {
@@ -94,6 +98,7 @@ public class AdminServiceImpl implements AdminService {
             } else {
                 tag2.put(projectInfo.get("p_id"), "");
                 projectInfo.remove("upm_id");
+
                 projectInfo.put("projectLeader", "[" + tag1.get(projectInfo.get("p_id")) + "]");
                 dealMapList.add(projectInfo);
             }
@@ -118,13 +123,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<Map<String, String>> showAllUser() {
+    public List<ParticipantDTO> showAllUser() {
         return adminMapper.showAllUser();
     }
 
     @Override
     public List<Map<String, String>> showAllUserInfo() {
         return adminMapper.showAllUserInfo();
+    }
+
+    @Override
+    public List<RootProjectDTO> showProjectInfo() {
+        return adminMapper.showProjectInfo();
+    }
+
+    @Override
+    public List<LeaderInfoDTO> showLeaderInfo(int p_id) {
+
+        return adminMapper.showLeaderInfo(p_id);
     }
 
     @Transactional
@@ -143,31 +159,45 @@ public class AdminServiceImpl implements AdminService {
     public Result cheakLeaderIsExist(Map<String, String> addLeaderParamMap) {
         List<Map<String, String>> resMapList = adminMapper.checkLeaderIsExist(addLeaderParamMap);
         int num = resMapList.size();
+        int fistNum=adminMapper.getUPParticipantTotal();
         if (num == 0) {// 若resMapList长度为零，表示不存在该用户，则需要新增
             int upManagerId = adminMapper.getUPManagerTotal() + 1;
             Map<String, String> upmParamMap = new HashMap<>();
             upmParamMap.put("upManagerId", String.valueOf(upManagerId));
-            upmParamMap.put("userId", addLeaderParamMap.get("uid"));
-            upmParamMap.put("projectId", addLeaderParamMap.get("pid"));
+            upmParamMap.put("userId", addLeaderParamMap.get("u_id"));
+            upmParamMap.put("projectId",String.valueOf(addLeaderParamMap.get("p_id")) );
             adminMapper.addUPManager(upmParamMap);
             int upParticipantId = adminMapper.getUPParticipantTotal() + 1;
             Map<String, String> uppParamMap = new HashMap<>();
             uppParamMap.put("upParticipantId", String.valueOf(upParticipantId));
-            uppParamMap.put("userId", addLeaderParamMap.get("uid"));
-            uppParamMap.put("projectId", addLeaderParamMap.get("pid"));
+            uppParamMap.put("userId", addLeaderParamMap.get("u_id"));
+            uppParamMap.put("projectId", String.valueOf(addLeaderParamMap.get("p_id")));
             uppParamMap.put("startTime", DateUtil.getInstance().getDate_yyyyMMdd());
             adminMapper.addUPParticipant(uppParamMap);
             log.info("================ AdminServiceImpl cheakLeaderIsExist 为该用户新增upp和upm关系成功");
-            return Result.success();
+            List<LeaderInfoDTO> projectLeader=adminMapper.showLeaderInfo(Integer.parseInt(addLeaderParamMap.get("p_id")));
+            log.info("participantsInfoList___________________"+projectLeader);
+            return Result.success(projectLeader);
         } else if (num == 1) {// 若resMapList长度为一，表示该leader在该项目中任职过，则需要改upp和upm的状态
+            int upm_status=adminMapper.showStatus(addLeaderParamMap.get("u_id"),addLeaderParamMap.get("p_id"));
             Map<String, String> upmParamMap = new HashMap<>();
-            upmParamMap.put("uid", addLeaderParamMap.get("uid"));
-            upmParamMap.put("pid", addLeaderParamMap.get("pid"));
-            upmParamMap.put("status", "1");
+            upmParamMap.put("uid", addLeaderParamMap.get("u_id"));
+            upmParamMap.put("pid", String.valueOf(addLeaderParamMap.get("p_id")));
+            upmParamMap.put("upm_status", "1");
             adminMapper.updateUPMStatusPersonal(upmParamMap);
             adminMapper.updateUPPStatusPersonal(upmParamMap);
+
             log.info("================ AdminServiceImpl cheakLeaderIsExist 为改用户更改upp和upm关系成功");
-            return Result.success();
+
+            if(upm_status==1){
+                List<LeaderInfoDTO> LeaderInfoDTO=adminMapper.showLeaderInfo(Integer.parseInt(addLeaderParamMap.get("p_id")));
+                log.info("participantsInfoList___________________"+LeaderInfoDTO);
+                return Result.failed(ErrorCode.FAIL_DATABASE,"管理员已存在",LeaderInfoDTO);
+            }else{
+                List<LeaderInfoDTO> LeaderInfoDTO=adminMapper.showLeaderInfo(Integer.parseInt(addLeaderParamMap.get("p_id")));
+                log.info("participantsInfoList___________________"+LeaderInfoDTO);
+                return Result.success(LeaderInfoDTO);
+            }
         } else {
             return Result.failed(ErrorCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
         }
@@ -181,7 +211,9 @@ public class AdminServiceImpl implements AdminService {
             // 为入参增加key结束时间，用于upp的upp_endtime字段
             delLeaderParamMap.put("endTime", DateUtil.getInstance().getDate_yyyyMMdd());
             adminMapper.zeroLeaderInUPP(delLeaderParamMap);
-            return Result.success();
+            List<LeaderInfoDTO> LeaderInfoDTO=adminMapper.showLeaderInfo(Integer.parseInt(delLeaderParamMap.get("p_id")));
+            log.info("participantsInfoList___________________"+LeaderInfoDTO);
+            return Result.success(LeaderInfoDTO);
         } catch (Exception e) {
             return Result.failed(ErrorCode.FAIL_DATABASE, "数据库操作失败");
         }

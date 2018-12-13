@@ -1,7 +1,12 @@
 package com.example.report.mapper;
 
+import com.example.report.domain.DTO.LeaderInfoDTO;
+import com.example.report.domain.DTO.ParticipantDTO;
 import com.example.report.domain.DTO.ProjectPublishDTO;
+import com.example.report.domain.DTO.RootProjectDTO;
+import com.example.report.domain.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -33,10 +38,14 @@ public interface AdminMapper {
     List<Map<String, String>> showAllProject();
 
     // 发布项目时，展示user表中全部的userId和userName
-    List<Map<String, String>> showAllUser();
+    List<ParticipantDTO> showAllUser();
 
     // 成员管理时，展示所有成员信息
     List<Map<String, String>> showAllUserInfo();
+
+    List<RootProjectDTO> showProjectInfo();
+
+    List<LeaderInfoDTO> showLeaderInfo(@Param("p_id") int p_id);
 
     // 更新项目状态
     void updateProjectStatus(Map<String, String> projectStatusMap);
@@ -83,4 +92,6 @@ public interface AdminMapper {
 
     // 超管重置成员密码，默认密码123456
     void restPassword(String uid);
+
+    int showStatus(@Param("uid") String uid,@Param("pid") String pid);
 }

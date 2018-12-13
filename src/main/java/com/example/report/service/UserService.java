@@ -4,9 +4,9 @@ import com.example.report.domain.User;
 import com.example.report.helper.Result;
 
 public interface UserService {
-    User userLogin(String phone,String password);
+    User userLogin(String phone, String password);
 
-    String findUserIdByPhonePwd(String phone, String oldPassword);
+    String findUserIdByPhonePwd(String uid, String oldPassword);
 
-    Result resetPwd(String phone, String newpassword, String oldPassword);
+    Result resetPwd(String uid, String newpassword, String oldPassword);
 }

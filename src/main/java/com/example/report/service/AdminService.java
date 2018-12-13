@@ -1,6 +1,10 @@
 package com.example.report.service;
 
+import com.example.report.domain.DTO.LeaderInfoDTO;
+import com.example.report.domain.DTO.ParticipantDTO;
 import com.example.report.domain.DTO.ProjectPublishDTO;
+import com.example.report.domain.DTO.RootProjectDTO;
+import com.example.report.domain.User;
 import com.example.report.helper.Result;
 
 import java.util.List;
@@ -12,11 +16,16 @@ import java.util.Map;
 public interface AdminService {
     Result publishProject(ProjectPublishDTO projectPublishDTO);
 
-    List<Map<String, String>> showAllProject();
+    //List<Map<String, String>> showAllProject();
+    List<Map<String,String>> showAllProject();
 
-    List<Map<String, String>> showAllUser();
+    List<ParticipantDTO> showAllUser();
 
     List<Map<String, String>> showAllUserInfo();
+
+    List<RootProjectDTO> showProjectInfo();
+
+    List<LeaderInfoDTO> showLeaderInfo(int p_id);
 
     Result updateProjectStatus(Map<String, String> projectStatusMap);
 
@@ -31,4 +40,6 @@ public interface AdminService {
     Result delUser(String uid);
 
     Result restPassword(String uid);
+
+
 }

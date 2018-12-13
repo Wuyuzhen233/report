@@ -43,19 +43,19 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public String findUserIdByPhonePwd(String phone, String oldPassword) {
+    public String findUserIdByPhonePwd(String uid, String oldPassword) {
         Map<String,String> map = new HashMap<>();
-        map.put("phone", phone);
+        map.put("uid", uid);
         map.put("oldPassword", oldPassword);
-        String userId = userMapper.findUserIdByPhonePwd(map);
+        String userId = userMapper.findUserIdByUidPwd(map);
         return userId;
     }
 
     @Override
-    public Result resetPwd(String phone, String newpassword, String oldPassword) {
+    public Result resetPwd(String uid, String newpassword, String oldPassword) {
         if (oldPassword.trim().length() > 0) {
             Map<String,String> map = new HashMap<>();
-            map.put("phone", phone);
+            map.put("uid", uid);
             map.put("newpassword", newpassword);
             map.put("oldPassword", oldPassword);
             userMapper.resetPwd(map);

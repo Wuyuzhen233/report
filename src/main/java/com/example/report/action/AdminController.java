@@ -1,14 +1,17 @@
 package com.example.report.action;
 
 import com.example.report.common.enums.ErrorCode;
-import com.example.report.domain.DTO.ProjectPublishDTO;
+import com.example.report.domain.DTO.*;
+import com.example.report.domain.User;
 import com.example.report.helper.Result;
 import com.example.report.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +49,27 @@ public class AdminController {
      */
     @PostMapping("showAllProject")
     public Result showAllProject() {
-        List<Map<String, String>> projectList = adminService.showAllProject();
-        List<Map<String, String>> userList = adminService.showAllUser();
-        Map<String, List<Map<String, String>>> resMap = new HashMap<>();
-        resMap.put("projectList", projectList);
-        resMap.put("userList", userList);
-        log.info("############ controller admin/showAllProject resMap{}", resMap);
-        return Result.success(resMap);
+       List<RootProjectDTO> rootProjectDTOList=adminService.showProjectInfo();
+       for(RootProjectDTO rootProjectDTO:rootProjectDTOList){
+            int p_id=rootProjectDTO.getP_id();
+            List<LeaderInfoDTO> projectLeader=adminService.showLeaderInfo(p_id);
+            rootProjectDTO.setProjectLeader(projectLeader);
+       }
+       log.info(rootProjectDTOList.toString());
+//        Map<String, List> lists=new HashMap<>();
+       // return null;
+        //List<Map<String, String>> projectList = adminService.showAllProject();
+        //List<Map<String, String>> userList = adminService.showAllUser();
+        List<ParticipantDTO> userList =  adminService.showAllUser();
+//        log.info(userList.toString());
+//        Map<String, List<Map<String, String>>> resMap = new HashMap<>();
+//        resMap.put("projectList", projectList);
+        //resMap.put("userList", userList);
+        ShowAllProjectDTO lists=new ShowAllProjectDTO();
+        lists.setUserList(userList);
+        lists.setRootProjectDTOList(rootProjectDTOList);
+        log.info("############ controller admin/showAllProject resMap{}", lists);
+        return Result.success(lists);
     }
 
     /**
@@ -63,7 +80,7 @@ public class AdminController {
      */
     @PostMapping("showAllUser")
     public Result showAllUser() {
-        List<Map<String, String>> userList = adminService.showAllUser();
+        List<ParticipantDTO> userList = adminService.showAllUser();
         log.info("############ controller admin/showAllUser userList{}", userList);
         return Result.success(userList);
     }
@@ -137,7 +154,7 @@ public class AdminController {
      */
     @PostMapping("addLeader")
     public Result addLeader(@RequestBody Map<String, String> addLeaderParamMap) {
-        if (addLeaderParamMap.containsKey("pid") && addLeaderParamMap.containsKey("uid")) {
+        if (addLeaderParamMap.containsKey("p_id") && addLeaderParamMap.containsKey("u_id")) {
             try {
                 return adminService.cheakLeaderIsExist(addLeaderParamMap);
             } catch (Exception e) {
@@ -158,7 +175,8 @@ public class AdminController {
      */
     @PostMapping("delLeader")
     public Result delLeader(@RequestBody Map<String, String> delLeaderParamMap) {
-        if (delLeaderParamMap.containsKey("pid") && delLeaderParamMap.containsKey("uid")) {
+        log.info(delLeaderParamMap.toString());
+        if (delLeaderParamMap.containsKey("p_id") && delLeaderParamMap.containsKey("u_id")) {
             try {
                 return adminService.delLeaderInProject(delLeaderParamMap);
             } catch (Exception e) {

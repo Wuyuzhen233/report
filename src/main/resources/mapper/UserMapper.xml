@@ -18,10 +18,10 @@
         WHERE
           u_phone=#{phone} and u_password=#{password} and u_status=20
     </select>
-    <select id="findUserIdByPhonePwd" parameterType="java.util.Map" resultType="java.lang.String">
-        SELECT u_id FROM rt_user WHERE u_phone = #{phone} AND u_password = #{oldPassword}
+    <select id="findUserIdByUidPwd" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT u_id FROM rt_user WHERE u_id = #{uid} AND u_password = #{oldPassword}
     </select>
     <update id="resetPwd" parameterType="java.util.Map">
-        update rt_user set u_password = #{newpassword} where u_phone = #{phone} AND u_password = #{oldPassword}
+        update rt_user set u_password = #{newpassword} where u_id = #{uid} AND u_password = #{oldPassword}
     </update>
 </mapper>
