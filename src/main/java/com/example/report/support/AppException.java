@@ -1,23 +1,22 @@
-package com.example.report.common;
+package com.example.report.support;
 
-import com.example.report.common.enums.ErrorCode;
 import org.apache.commons.lang3.StringUtils;
 
 public class AppException extends RuntimeException {
     private static final long serialVersionUID = 8449738842423044010L;
 
-    private ErrorCode code;
+    private ResultCode code;
 
-    public AppException(ErrorCode code) {
+    public AppException(ResultCode code) {
         this.code = code;
     }
 
-    public AppException(ErrorCode code, String message) {
+    public AppException(ResultCode code, String message) {
         super(message);
         this.code = code;
     }
 
-    public ErrorCode getCode() {
+    public ResultCode getCode() {
         return code;
     }
 

@@ -1,12 +1,11 @@
 package com.example.report.service.impl;
 
-import com.example.report.common.enums.ErrorCode;
+import com.example.report.support.ResultCode;
 import com.example.report.domain.DTO.*;
-import com.example.report.domain.User;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.mapper.AdminMapper;
 import com.example.report.service.AdminService;
-import com.example.report.common.utils.DateUtil;
+import com.example.report.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
             // 获取userIdList
             List<String> userIdList = projectPublishDTO.getUserIdList();
             if (userIdList.isEmpty()) {
-                return Result.failed(ErrorCode.FAIL_DATABASE, "请为项目确定项目负责人");
+                return Result.failed(ResultCode.FAIL_DATABASE, "请为项目确定项目负责人");
             }
             // 在rt_up_manager中插入记录
             int upManagerId = adminMapper.getUPManagerTotal() + 1;
@@ -64,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
             return Result.success();
         } catch (Exception e) {
             log.error("发布项目异常{}", e);
-            return Result.failed(ErrorCode.USER_NOT_LOGIN, "发布项目异常");
+            return Result.failed(ResultCode.USER_NOT_LOGIN, "发布项目异常");
         }
     }
 
@@ -117,7 +116,7 @@ public class AdminServiceImpl implements AdminService {
             // 成员项目管理关系表中状态(upp_status)变更为关闭(0)
             adminMapper.updateUPMStatus(projectStatusMap);
         } else {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "状态值status错误");
+            return Result.failed(ResultCode.FAIL_DATABASE, "状态值status错误");
         }
         return Result.success();
     }
@@ -150,7 +149,7 @@ public class AdminServiceImpl implements AdminService {
             adminMapper.updateProjectNameDetail(projectInfo);
             log.error("================ AdminServiceImpl updateProjectNameDetail projectInfo{}", projectInfo);
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "数据库更新项目名称详情失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "数据库更新项目名称详情失败");
         }
         return Result.success();
     }
@@ -192,14 +191,14 @@ public class AdminServiceImpl implements AdminService {
             if(upm_status==1){
                 List<LeaderInfoDTO> LeaderInfoDTO=adminMapper.showLeaderInfo(Integer.parseInt(addLeaderParamMap.get("p_id")));
                 log.info("participantsInfoList___________________"+LeaderInfoDTO);
-                return Result.failed(ErrorCode.FAIL_DATABASE,"管理员已存在",LeaderInfoDTO);
+                return Result.failed(ResultCode.FAIL_DATABASE,"管理员已存在",LeaderInfoDTO);
             }else{
                 List<LeaderInfoDTO> LeaderInfoDTO=adminMapper.showLeaderInfo(Integer.parseInt(addLeaderParamMap.get("p_id")));
                 log.info("participantsInfoList___________________"+LeaderInfoDTO);
                 return Result.success(LeaderInfoDTO);
             }
         } else {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
+            return Result.failed(ResultCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
         }
     }
 
@@ -215,7 +214,7 @@ public class AdminServiceImpl implements AdminService {
             log.info("participantsInfoList___________________"+LeaderInfoDTO);
             return Result.success(LeaderInfoDTO);
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "数据库操作失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "数据库操作失败");
         }
     }
 
@@ -228,7 +227,7 @@ public class AdminServiceImpl implements AdminService {
             adminMapper.saveUser(userInfoMap);
             return Result.success();
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "保存用户信息，入库失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "保存用户信息，入库失败");
         }
     }
 
@@ -244,7 +243,7 @@ public class AdminServiceImpl implements AdminService {
             adminMapper.delUserInUPP(map);
             return Result.success();
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "删除用户失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "删除用户失败");
         }
 
     }
@@ -255,7 +254,7 @@ public class AdminServiceImpl implements AdminService {
             adminMapper.restPassword(uid);
             return Result.success();
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "数据库重置密码失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "数据库重置密码失败");
         }
     }
 

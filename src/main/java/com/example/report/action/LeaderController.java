@@ -1,14 +1,12 @@
 package com.example.report.action;
 
-import com.example.report.common.enums.ErrorCode;
-import com.example.report.helper.Result;
+import com.example.report.support.ResultCode;
+import com.example.report.support.Result;
 import com.example.report.service.LeaderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -86,10 +84,10 @@ public class LeaderController {
             try {
                 return leaderService.cheakMemberIsExist(addMemberParamMap);
             } catch (Exception e) {
-                return Result.failed(ErrorCode.FAIL_DATABASE, "数据操作失败");
+                return Result.failed(ResultCode.FAIL_DATABASE, "数据操作失败");
             }
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "入参不完整");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "入参不完整");
         }
     }
 
@@ -104,7 +102,7 @@ public class LeaderController {
         if (delMemberParamMap.containsKey("p_id") && delMemberParamMap.containsKey("u_id")) {
             return leaderService.delUser(delMemberParamMap);
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "缺少必要参数");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "缺少必要参数");
         }
 
     }

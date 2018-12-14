@@ -1,6 +1,6 @@
 package com.example.report.service.impl;
 
-import com.example.report.common.utils.DateDistance;
+import com.example.report.utils.DateDistance;
 import com.example.report.domain.DTO.AudtingProjectDTO;
 import com.example.report.domain.DTO.ParticipantDTO;
 import com.example.report.domain.DTO.ProjectDTO;

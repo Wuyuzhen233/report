@@ -1,9 +1,7 @@
 package com.example.report.service.impl;
 
-import com.example.report.common.utils.IdGenUtils;
-import com.example.report.common.utils.IdGeneratorUtil;
+import com.example.report.utils.IdGenUtils;
 import com.example.report.domain.DTO.ProjectDTO;
-import com.example.report.domain.Worktime;
 import com.example.report.mapper.WorktimeDetailMapper;
 import com.example.report.mapper.WorktimeMapper;
 import com.example.report.service.WorktimeService;

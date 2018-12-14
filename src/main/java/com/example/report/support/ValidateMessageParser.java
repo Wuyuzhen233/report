@@ -1,7 +1,6 @@
-package com.example.report.helper;
+package com.example.report.support;
 
 
-import com.example.report.common.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTermType;
@@ -36,17 +35,17 @@ public class ValidateMessageParser {
       new PlatformResourceBundleLocator(ResourceBundleMessageInterpolator.USER_VALIDATION_MESSAGES);
 
 
-  private String getErrorCodeMessagekey(ErrorCode errorCode) {
+  private String getErrorCodeMessagekey(ResultCode resultCode) {
     StringBuilder sb = new StringBuilder();
-    sb.append(MESSAGE_KEY_PREFIX).append(ERROR_CODE_KEY_PRE_FIX).append(errorCode.toString())
+    sb.append(MESSAGE_KEY_PREFIX).append(ERROR_CODE_KEY_PRE_FIX).append(resultCode.toString())
         .append(MESSAGE_KEY_SUFFIX);
     return sb.toString();
   }
 
-  public String parseMessage(ErrorCode errorCode, String messageKey) {
+  public String parseMessage(ResultCode resultCode, String messageKey) {
     String realMessageKey =
-        StringUtils.isBlank(messageKey) || errorCode.toString().equals(messageKey)
-            ? getErrorCodeMessagekey(errorCode) : messageKey;
+        StringUtils.isBlank(messageKey) || resultCode.toString().equals(messageKey)
+            ? getErrorCodeMessagekey(resultCode) : messageKey;
     try {
       if (realMessageKey.startsWith(MESSAGE_KEY_PREFIX)
           && realMessageKey.endsWith(MESSAGE_KEY_SUFFIX)) {

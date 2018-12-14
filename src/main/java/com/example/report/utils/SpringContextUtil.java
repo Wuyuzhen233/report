@@ -1,4 +1,4 @@
-package com.example.report.common.utils;
+package com.example.report.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
