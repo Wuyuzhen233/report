@@ -220,6 +220,7 @@ public class AdminController {
      */
     @PostMapping("restUserInfo")
     public Result restUserInfo(@RequestBody User user){
+        log.info("UserInfo:++++++++++++++++++++++++"+user.toString());
         adminService.updateUserInfo(user);
         return Result.success();
     }

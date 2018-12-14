@@ -62,5 +62,9 @@
         UPDATE rt_up_participant SET upp_status = 0 AND upp_endtime = #{endTime} WHERE u_id = #{uid} AND p_id = #{pid}
     </update>
 
+	<select id="getParticipantStatus" resultType="java.lang.Integer">
+		select upp_status from rt_up_participant where u_id=#{uid} and p_id=#{pid}
+	</select>
+
 
 </mapper>

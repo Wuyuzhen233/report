@@ -92,9 +92,12 @@ public class LeaderServiceImpl implements LeaderService {
 
     @Override
     public Result cheakMemberIsExist(Map<String, String> addMemberParamMap) {
+        int leaderstatus=leaderMapper.getParticipantStatus(Integer.parseInt(addMemberParamMap.get("u_id")),Integer.parseInt(addMemberParamMap.get("p_id")));
         List<Map<String, String>> resMapList = leaderMapper.cheakMemberIsExist(addMemberParamMap);
         int num = resMapList.size();
-        int fistNum=leaderMapper.getUPParticipantTotal();
+        //int fistNum=leaderMapper.getUPParticipantTotal();
+
+        log.info("status"+leaderstatus+"num"+num);
         if (num == 0) {// 若resMapList长度为零，表示不存在该用户，则需要新增
             int upParticipantId = leaderMapper.getUPParticipantTotal() + 1;
             Map<String, String> uppParamMap = new HashMap<>();
@@ -110,13 +113,13 @@ public class LeaderServiceImpl implements LeaderService {
             return Result.success(participantsInfoList);
         } else if (num == 1) {// 若resMapList长度为一，表示该member参与过该项目，则需要改upp的状态
             Map<String, String> uppParamMap = new HashMap<>();
-            uppParamMap.put("uid", addMemberParamMap.get("uid"));
-            uppParamMap.put("pid", addMemberParamMap.get("pid"));
+            uppParamMap.put("uid", addMemberParamMap.get("u_id"));
+            uppParamMap.put("pid", addMemberParamMap.get("p_id"));
             uppParamMap.put("status", "1");
             leaderMapper.updateUPPStatusPersonal(uppParamMap);
             log.info("================ AdminServiceImpl cheakLeaderIsExist 为改用户更改upp和upm关系成功");
-            int finalNum=leaderMapper.getUPParticipantTotal();
-            if(fistNum==finalNum){
+            //int finalNum=leaderMapper.getUPParticipantTotal();
+            if(leaderstatus==1){
                 List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
                 log.info("participantsInfoList___________________"+participantsInfoList);
                 return Result.failed(ErrorCode.FAIL_DATABASE," 用户已存在",participantsInfoList);

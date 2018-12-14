@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id="showFailList" parameterType="java.lang.Integer" resultType="java.lang.String">
-        select w_date from rt_worktime where w_state=1 and u_id=#{uid}
+        select w_date from rt_worktime where w_state=0 and u_id=#{uid}
     </select>
 
     <select id="showProjectList" resultMap="projectDTO">
@@ -30,7 +30,7 @@
         WHERE a.u_id=#{uid} AND a.p_id=b.p_id AND a.upp_status=1) p
         LEFT JOIN
         (SELECT w.w_id,w.u_id,w.p_id as pid,w.w_date,w.w_project_num,w.w_state,u.u_name,w.w_auditing_date,d.wd_detail
-        FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date=#{date} AND w.w_state <![CDATA[<>]]> 3)
+        FROM rt_worktime w,rt_worktime_detail d,rt_user u where w.w_id=d.w_id AND u.u_id=w.u_id AND w.w_date=#{date} AND w.w_state <![CDATA[<>]]> 3 and u.u_id=#{uid})
         e ON p.p_id=e.pid) k
 
     </select>
