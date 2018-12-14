@@ -24,4 +24,16 @@
     <update id="resetPwd" parameterType="java.util.Map">
         update rt_user set u_password = #{newpassword} where u_id = #{uid} AND u_password = #{oldPassword}
     </update>
+    <insert id="register" parameterType="com.example.report.domain.securityEntity.UserAuth">
+        INSERT INTO jwt_user(username, password, role) VALUES(#{username}, #{password}, #{role})
+    </insert>
+    <resultMap id="findByUsername_jwt" type="com.example.report.domain.securityEntity.UserAuth">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="role" property="role" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findByUsername" parameterType="java.lang.String" resultMap="findByUsername_jwt">
+        SELECT id, username, password, role FROM jwt_user WHERE username = #{username}
+    </select>
 </mapper>

@@ -6,8 +6,8 @@ import java.util.List;
 
 @Data
 public class ProjectStstusDTO {
-private int pid;
-private int status;
-private List<Integer> uppIdList;
-private List<Integer> upmIdList;
+    private int pid;
+    private int status;
+    private List<Integer> uppIdList;
+    private List<Integer> upmIdList;
 }

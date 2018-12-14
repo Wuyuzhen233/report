@@ -1,11 +1,14 @@
 package com.example.report.service.impl;
 
+import com.example.report.domain.securityEntity.UserAuth;
 import com.example.report.support.ResultCode;
 import com.example.report.domain.User;
 import com.example.report.support.Result;
 import com.example.report.mapper.UserMapper;
 import com.example.report.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +21,8 @@ import java.util.Map;
 public class UserServiceImp implements UserService {
     @Resource
     UserMapper userMapper;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User userLogin(String phone, String password) {
@@ -63,6 +68,12 @@ public class UserServiceImp implements UserService {
             log.error("通过手机号密码更改密码异常。\t新密码：{}长度为零", oldPassword);
             return Result.failed(ResultCode.FAIL_DATABASE, "用户修改密码异常");
         }
+    }
+
+    @Override
+    public void register(Map<String, String> registerUserInfoMap) {
+        registerUserInfoMap.put("password", bCryptPasswordEncoder.encode(registerUserInfoMap.get("password")));
+        userMapper.register(registerUserInfoMap);
     }
 
 

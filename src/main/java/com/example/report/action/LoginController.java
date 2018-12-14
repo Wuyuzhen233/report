@@ -1,5 +1,6 @@
 package com.example.report.action;
 
+import com.example.report.domain.securityEntity.UserAuth;
 import com.example.report.support.ResultCode;
 import com.example.report.domain.DTO.UserLoginDTO;
 import com.example.report.domain.User;
@@ -7,15 +8,41 @@ import com.example.report.support.Result;
 import com.example.report.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/loginController")
+@RequestMapping("/auth")
 @Slf4j
 public class LoginController {
     @Autowired
     UserService userService;
+
+    /**
+     * 用户注册
+     * {"username":"aimu","password":"aimu","role":"ROLE_USER/ROLE_ADMIN"}
+     *
+     * @param registerUserInfoMap
+     * @return
+     */
+    @PostMapping("/register")
+    public Result registerUser(@RequestBody Map<String, String> registerUserInfoMap) {
+        if (registerUserInfoMap.containsKey("username")
+                && registerUserInfoMap.containsKey("password")
+                && registerUserInfoMap.containsKey("role")) {
+            try {
+                userService.register(registerUserInfoMap);
+            } catch (Exception e) {
+                return Result.failed(ResultCode.FAIL_DATABASE, "数据库操作失败，注册用户异常");
+            }
+            return Result.success(ResultCode.SUCCESS);
+        } else {
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "缺少必要入参");
+        }
+    }
 
     /**
      * 用户登陆

@@ -1,6 +1,7 @@
 package com.example.report.mapper;
 
 import com.example.report.domain.User;
+import com.example.report.domain.securityEntity.UserAuth;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -14,4 +15,8 @@ public interface UserMapper extends Mapper<User> {
     String findUserIdByUidPwd(Map<String, String> map);
 
     void resetPwd(Map<String, String> map);
+
+    void register(Map<String, String> registerUserInfoMap);
+
+    UserAuth findByUsername(String s);
 }

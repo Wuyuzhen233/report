@@ -46,7 +46,7 @@ public class WorktimeServiceImp implements WorktimeService {
     public void saveWorktimeReporting(List<ProjectDTO> worktimeList) {
         for(ProjectDTO worktime:worktimeList) {
             try {
-//                long wid = IdGeneratorUtil.createID();
+//                long wid = IdGeneratorUtil_waitToDel.createID();
                 IdGenUtils idGenUtils = new IdGenUtils(0,0);
                 long wid = idGenUtils.nextId();
                 worktime.setWid(String.valueOf(wid));

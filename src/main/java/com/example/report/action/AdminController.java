@@ -8,6 +8,7 @@ import com.example.report.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public class AdminController {
      * 发布项目
      * http://192.168.1.115:8082/report/admin/publishProject
      * header:Content-Type body:{"projectDesc":"pdesc111","projectName":"pname111","userIdList":["4","5"]}
-     *完成
+     * 完成
+     *
      * @param projectPublishDTO
      * @return
      */
@@ -44,28 +46,29 @@ public class AdminController {
     /**
      * 展示所有项目
      * http://192.168.1.115:8082/report/admin/showAllProject
-     *完成
+     * 完成
+     *
      * @return
      */
     @PostMapping("showAllProject")
     public Result showAllProject() {
-       List<RootProjectDTO> rootProjectDTOList=adminService.showProjectInfo();
-       for(RootProjectDTO rootProjectDTO:rootProjectDTOList){
-            int p_id=rootProjectDTO.getP_id();
-            List<LeaderInfoDTO> projectLeader=adminService.showLeaderInfo(p_id);
+        List<RootProjectDTO> rootProjectDTOList = adminService.showProjectInfo();
+        for (RootProjectDTO rootProjectDTO : rootProjectDTOList) {
+            int p_id = rootProjectDTO.getP_id();
+            List<LeaderInfoDTO> projectLeader = adminService.showLeaderInfo(p_id);
             rootProjectDTO.setProjectLeader(projectLeader);
-       }
-       log.info(rootProjectDTOList.toString());
+        }
+        log.info(rootProjectDTOList.toString());
 //        Map<String, List> lists=new HashMap<>();
-       // return null;
+        // return null;
         //List<Map<String, String>> projectList = adminService.showAllProject();
         //List<Map<String, String>> userList = adminService.showAllUser();
-        List<ParticipantDTO> userList =  adminService.showAllUser();
+        List<ParticipantDTO> userList = adminService.showAllUser();
 //        log.info(userList.toString());
 //        Map<String, List<Map<String, String>>> resMap = new HashMap<>();
 //        resMap.put("projectList", projectList);
         //resMap.put("userList", userList);
-        ShowAllProjectDTO lists=new ShowAllProjectDTO();
+        ShowAllProjectDTO lists = new ShowAllProjectDTO();
         lists.setUserList(userList);
         lists.setRootProjectDTOList(rootProjectDTOList);
         log.info("############ controller admin/showAllProject resMap{}", lists);
@@ -75,7 +78,8 @@ public class AdminController {
     /**
      * 发布项目时，展示所有成员id和name
      * http://192.168.1.115:8082/report/admin/showAllUser
-     *完成
+     * 完成
+     *
      * @return
      */
     @PostMapping("showAllUser")
@@ -87,7 +91,8 @@ public class AdminController {
 
     /**
      * 成员管理时，展示所有成员信息
-     *完成
+     * 完成
+     *
      * @return
      */
     @PostMapping("showAllUserInfo")
@@ -101,19 +106,15 @@ public class AdminController {
      * 更新项目的状态
      * http://192.168.1.115:8082/report/admin/updateProjectStatus
      * {"pid":1,"status":2,"uppid":3,"upmid":4}
-     *完成
+     * 完成
+     *
      * @param projectStstusDTO
      * @return
      */
     @PostMapping("updateProjectStatus")
     public Result updateProjectStatus(@RequestBody ProjectStstusDTO projectStstusDTO) {
         log.info(projectStstusDTO.toString());
-        if (1==1
-//                projectStstusDTO.getPid()
-//                && projectStstusDTO.getStatus()
-//                && projectStstusDTO.getUppIdList()
-//                && projectStstusDTO.getUpmIdList()
-                ) {
+        if (projectStstusDTO.getPid() != 0) {
             log.warn("############ controller /admin/updateProjectStatus projectStatusMap:{}", projectStstusDTO);
             try {
                 return adminService.updateProjectStatus(projectStstusDTO);
@@ -121,7 +122,7 @@ public class AdminController {
                 return Result.failed(ResultCode.FAIL_DATABASE, "更新项目状态失败");
             }
         } else {
-            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "入参不完整");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "没有该项目id，入参错误");
         }
     }
 
@@ -129,7 +130,8 @@ public class AdminController {
      * 保存编辑后的项目信息
      * http://192.168.1.108:8082/report/admin/saveProject
      * {"pid":2,"projectDesc":"金牛状态0，已关闭","projectName":"金牛座"}
-     *完成
+     * 完成
+     *
      * @param projectInfo
      * @return
      */
@@ -151,7 +153,8 @@ public class AdminController {
      * 新增负责人leader
      * http://192.168.1.109:8082/report/admin/addLeader
      * {"pid":2,"uid":"2"}
-     *完成
+     * 完成
+     *
      * @param addLeaderParamMap
      * @return
      */
@@ -172,7 +175,8 @@ public class AdminController {
      * 删除负责人leader
      * http://192.168.1.109:8082/report/admin/delLeader
      * {"pid":2,"uid":"2"}
-     *完成
+     * 完成
+     *
      * @param delLeaderParamMap
      * @return
      */
@@ -210,22 +214,22 @@ public class AdminController {
 
     /**
      * 超管删除用户
-     *完成
+     * 完成
+     *
      * @param
      * @return
      */
     @PostMapping("delUser")
     public Result delUser(@RequestBody User user) {
-        log.info("uid++++++++++++++++"+user.getUserId());
+        log.info("uid++++++++++++++++" + user.getUserId());
         return adminService.delUser(String.valueOf(user.getUserId()));
     }
 
     /**
      * 超管修改用户信息
-     *
      */
     @PostMapping("restUserInfo")
-    public Result restUserInfo(@RequestBody User user){
+    public Result restUserInfo(@RequestBody User user) {
         adminService.updateUserInfo(user);
         return Result.success();
     }
