@@ -13,5 +13,5 @@ public class ProjectPublishDTO {
     private String projectName;
     private int projectStatus;// 项目的状态，默认开启，开启1，关闭0
     private String projectDesc;
-    List<String> userIdList;
+    List<Integer> userIdList;
 }

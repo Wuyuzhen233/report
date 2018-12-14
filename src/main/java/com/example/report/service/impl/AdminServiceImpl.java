@@ -1,12 +1,15 @@
 package com.example.report.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.example.report.support.ResultCode;
 import com.example.report.domain.DTO.*;
+import com.example.report.domain.User;
 import com.example.report.support.Result;
 import com.example.report.mapper.AdminMapper;
 import com.example.report.service.AdminService;
 import com.example.report.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
             adminMapper.publishProject(projectPublishDTO);
             log.info("================ 发布项目成功\tprojectId{}", projectId);
             // 获取userIdList
-            List<String> userIdList = projectPublishDTO.getUserIdList();
+            List<Integer> userIdList = projectPublishDTO.getUserIdList();
             if (userIdList.isEmpty()) {
                 return Result.failed(ResultCode.FAIL_DATABASE, "请为项目确定项目负责人");
             }
@@ -107,14 +110,25 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Result updateProjectStatus(Map<String, String> projectStatusMap) {
-        if (projectStatusMap.get("status").equals("0") || projectStatusMap.get("status").equals("1")) {
+    public Result updateProjectStatus(ProjectStstusDTO projectStatusMap) {
+        log.info("TTTTTTTTTTTTTTTT"+projectStatusMap.toString());
+        if (projectStatusMap.getStatus()==0 || projectStatusMap.getStatus()==1) {
             // 项目状态(p_status)变更为关闭(0)
-            adminMapper.updateProjectStatus(projectStatusMap);
+            int pid=projectStatusMap.getPid();
+            int status=projectStatusMap.getStatus();
+            List<Integer> uppIdList=projectStatusMap.getUppIdList();
+            List<Integer> upmIdList=projectStatusMap.getUpmIdList();
+            adminMapper.updateProjectStatus(pid,status);
             // 成员项目参与关系表中状态(upp_status)变更为关闭(0)
-            adminMapper.updateUPPStatus(projectStatusMap);
+            for(int i=0;i<uppIdList.size();i++ ){
+                adminMapper.updateUPPStatus(uppIdList.get(i),status);
+            }
+            //adminMapper.updateUPPStatus(projectStatusMap.get("uppid"));
             // 成员项目管理关系表中状态(upp_status)变更为关闭(0)
-            adminMapper.updateUPMStatus(projectStatusMap);
+            for(int i=0;i<upmIdList.size();i++ ){
+                adminMapper.updateUPMStatus(upmIdList.get(i),status);
+            }
+            //adminMapper.updateUPMStatus(projectStatusMap.get("upmid"));
         } else {
             return Result.failed(ResultCode.FAIL_DATABASE, "状态值status错误");
         }
@@ -256,6 +270,18 @@ public class AdminServiceImpl implements AdminService {
         } catch (Exception e) {
             return Result.failed(ResultCode.FAIL_DATABASE, "数据库重置密码失败");
         }
+    }
+
+    @Override
+    public void updateUserInfo(User user) {
+        Map<String,String> map=new HashMap();
+        map.put("userId",String.valueOf(user.getUserId()));
+        map.put("userName",user.getUserName());
+        map.put("userBase",user.getUserBase());
+        map.put("userPassword",user.getUserPassword());
+        map.put("userPhone",user.getUserPhone());
+
+        adminMapper.updateUserInfo(map);
     }
 
 }

@@ -100,20 +100,20 @@
     <select id="showAllUserInfo" resultMap="userInfo_saui">
         SELECT u_id, u_base, u_name, u_phone, u_role FROM rt_user WHERE u_status = 20 ORDER BY u_role;
     </select>
-    <update id="updateProjectStatus" parameterType="java.util.Map">
+    <update id="updateProjectStatus" parameterType="java.lang.Integer">
         UPDATE rt_project SET p_status = #{status} WHERE p_id = #{pid}
     </update>
-    <update id="updateUPPStatus" parameterType="java.util.Map">
-        UPDATE rt_up_participant SET upp_status = #{status} WHERE p_id = #{pid}
+    <update id="updateUPPStatus" parameterType="java.lang.Integer">
+        UPDATE rt_up_participant SET upp_status = #{status} WHERE upp_id = #{uppid}
     </update>
-    <update id="updateUPMStatus" parameterType="java.util.Map">
-        UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid}
+    <update id="updateUPMStatus" parameterType="java.lang.Integer">
+        UPDATE rt_up_manager SET upm_status = #{status} WHERE upm_id = #{upmid}
     </update>
     <update id="updateUPPStatusPersonal" parameterType="java.util.Map">
         UPDATE rt_up_participant SET upp_status = #{upm_status} WHERE p_id = #{pid} AND u_id = #{uid}
     </update>
     <update id="updateUPMStatusPersonal" parameterType="java.util.Map">
-        UPDATE rt_up_manager SET upm_status = #{upm_status} WHERE p_id = #{pid} AND u_id = #{uid}
+        UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
     </update>
     <update id="updateProjectNameDetail" parameterType="java.util.Map">
         UPDATE rt_project
@@ -125,7 +125,7 @@
                 p_name = #{projectName},
             </if>
         </set>
-        where p_id = #{pid}
+        where p_id = #{p_id}
     </update>
     <resultMap id="userInfo_clie" type="java.util.Map">
         <id column="upm_id" property="upmid" jdbcType="INTEGER"/>
@@ -152,10 +152,11 @@
         UPDATE rt_user SET u_status = 21 WHERE u_id = #{uid}
     </update>
     <update id="delUserInUPM" parameterType="java.lang.String">
-        UPDATE rt_up_manager SET upm_status = 0 WHERE u_id = #{uid}
+        UPDATE rt_up_manager SET upm_status = 0 WHERE upm_id in(SELECT * FROM(SELECT upm_id FROM rt_up_manager where u_id = #{uid}) p)
     </update>
     <update id="delUserInUPP" parameterType="java.util.Map">
-        UPDATE rt_up_participant SET upp_status = 0 AND upp_endtime = #{endTime} WHERE u_id = #{uid}
+        UPDATE rt_up_participant SET upp_status = 0 WHERE upp_id in(SELECT * FROM(SELECT upp_id FROM rt_up_participant where u_id = #{uid}) p)
+
     </update>
     <update id="restPassword" parameterType="java.lang.String">
         UPDATE rt_user SET u_password = 123456 WHERE u_id = #{uid}
@@ -185,4 +186,8 @@
     <select id="showStatus" resultType="java.lang.Integer">
       select upm_status from rt_up_manager where u_id=#{uid} and p_id=#{pid}
     </select>
+
+    <update id="updateUserInfo" parameterType="java.util.Map">
+        update rt_user set u_base=#{userBase},u_name=#{userName},u_phone=#{userPhone},u_password=#{userPassword} where u_is=#{userId}
+    </update>
 </mapper>
