@@ -1,9 +1,6 @@
 package com.example.report.service;
 
-import com.example.report.domain.DTO.LeaderInfoDTO;
-import com.example.report.domain.DTO.ParticipantDTO;
-import com.example.report.domain.DTO.ProjectPublishDTO;
-import com.example.report.domain.DTO.RootProjectDTO;
+import com.example.report.domain.DTO.*;
 import com.example.report.domain.User;
 import com.example.report.helper.Result;
 
@@ -27,7 +24,7 @@ public interface AdminService {
 
     List<LeaderInfoDTO> showLeaderInfo(int p_id);
 
-    Result updateProjectStatus(Map<String, String> projectStatusMap);
+    Result updateProjectStatus(ProjectStstusDTO projectStatusMap);
 
     Result updateProjectNameDetail(Map<String, String> projectInfo);
 
@@ -40,6 +37,8 @@ public interface AdminService {
     Result delUser(String uid);
 
     Result restPassword(String uid);
+
+    void updateUserInfo(User user);
 
 
 }

@@ -16,19 +16,19 @@ import java.util.Map;
  */
 @Mapper
 public interface AdminMapper {
-    // 发布项目
+    // 发布项目''
     void publishProject(ProjectPublishDTO projectPublishDTO);
 
-    // 关系表中增加发布项目的记录
+    // 关系表中增加发布项目的记录''
     void addUPManager(Map<String, String> map);
 
-    // 关系表中增加发布项目的记录
+    // 关系表中增加发布项目的记录''
     void addUPParticipant(Map<String, String> map);
 
-    // 获取项目总数
+    // 获取项目总数''
     int getProjectTotal();
 
-    // 获取关系表中的关系总数
+    // 获取关系表中的关系总数''
     int getUPManagerTotal();
 
     // 获取关系表中的关系总数
@@ -48,13 +48,13 @@ public interface AdminMapper {
     List<LeaderInfoDTO> showLeaderInfo(@Param("p_id") int p_id);
 
     // 更新项目状态
-    void updateProjectStatus(Map<String, String> projectStatusMap);
+    void updateProjectStatus(@Param("pid") int pid, @Param("status") int status);
 
     // 成员项目参与关系表中状态
-    void updateUPPStatus(Map<String, String> projectStatusMap);
+    void updateUPPStatus(@Param("uppid") int uppid, @Param("status") int status);
 
     // 成员项目管理关系表中状态
-    void updateUPMStatus(Map<String, String> projectStatusMap);
+    void updateUPMStatus(@Param("upmid") int upmid, @Param("status") int status);
 
     // 更新项目名称详情
     void updateProjectNameDetail(Map<String, String> projectInfo);
@@ -94,4 +94,6 @@ public interface AdminMapper {
     void restPassword(String uid);
 
     int showStatus(@Param("uid") String uid,@Param("pid") String pid);
+
+    void updateUserInfo(Map<String,String> userMap);
 }

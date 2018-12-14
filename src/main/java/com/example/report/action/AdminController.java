@@ -30,7 +30,7 @@ public class AdminController {
      * 发布项目
      * http://192.168.1.115:8082/report/admin/publishProject
      * header:Content-Type body:{"projectDesc":"pdesc111","projectName":"pname111","userIdList":["4","5"]}
-     *
+     *完成
      * @param projectPublishDTO
      * @return
      */
@@ -44,7 +44,7 @@ public class AdminController {
     /**
      * 展示所有项目
      * http://192.168.1.115:8082/report/admin/showAllProject
-     *
+     *完成
      * @return
      */
     @PostMapping("showAllProject")
@@ -75,7 +75,7 @@ public class AdminController {
     /**
      * 发布项目时，展示所有成员id和name
      * http://192.168.1.115:8082/report/admin/showAllUser
-     *
+     *完成
      * @return
      */
     @PostMapping("showAllUser")
@@ -87,13 +87,13 @@ public class AdminController {
 
     /**
      * 成员管理时，展示所有成员信息
-     *
+     *完成
      * @return
      */
     @PostMapping("showAllUserInfo")
     public Result showAllUserInfo() {
         List<Map<String, String>> userInfoList = adminService.showAllUserInfo();
-        log.info("############ controller admin/showAllUserInfo userInfoList{}", userInfoList);
+        log.info("############ controller admin/showAllUserInfo userInfoList{}+++++++++++++"+ userInfoList);
         return Result.success(userInfoList);
     }
 
@@ -101,39 +101,36 @@ public class AdminController {
      * 更新项目的状态
      * http://192.168.1.115:8082/report/admin/updateProjectStatus
      * {"pid":1,"status":2,"uppid":3,"upmid":4}
-     *
+     *完成
      * @param projectStatusMap
      * @return
      */
     @PostMapping("updateProjectStatus")
-    public Result updateProjectStatus(@RequestBody Map<String, String> projectStatusMap) {
-        if (projectStatusMap.containsKey("pid")
-                && projectStatusMap.containsKey("status")
-                && projectStatusMap.containsKey("uppid")
-                && projectStatusMap.containsKey("upmid")
-                ) {
+    public Result updateProjectStatus(@RequestBody ProjectStstusDTO projectStatusMap) {
+        log.info(projectStatusMap.toString());
+
             log.warn("############ controller /admin/updateProjectStatus projectStatusMap:{}", projectStatusMap);
             try {
+
                 return adminService.updateProjectStatus(projectStatusMap);
             } catch (Exception e) {
                 return Result.failed(ErrorCode.FAIL_DATABASE, "更新项目状态失败");
             }
-        } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "入参不完整");
-        }
+
     }
 
     /**
      * 保存编辑后的项目信息
      * http://192.168.1.108:8082/report/admin/saveProject
      * {"pid":2,"projectDesc":"金牛状态0，已关闭","projectName":"金牛座"}
-     *
+     *完成
      * @param projectInfo
      * @return
      */
     @PostMapping("saveProject")
     public Result saveProject(@RequestBody Map<String, String> projectInfo) {
-        if (projectInfo.containsKey("pid")) {
+        if (projectInfo.containsKey("p_id")) {
+
             if (projectInfo.containsKey("projectDesc")
                     || projectInfo.containsKey("projectName")) {
                 adminService.updateProjectNameDetail(projectInfo);
@@ -148,7 +145,7 @@ public class AdminController {
      * 新增负责人leader
      * http://192.168.1.109:8082/report/admin/addLeader
      * {"pid":2,"uid":"2"}
-     *
+     *完成
      * @param addLeaderParamMap
      * @return
      */
@@ -166,10 +163,10 @@ public class AdminController {
     }
 
     /**
-     * 新增负责人leader
+     * 删除负责人leader
      * http://192.168.1.109:8082/report/admin/delLeader
      * {"pid":2,"uid":"2"}
-     *
+     *完成
      * @param delLeaderParamMap
      * @return
      */
@@ -195,6 +192,7 @@ public class AdminController {
      */
     @PostMapping("saveUser")
     public Result saveUser(@RequestBody Map<String, String> userInfoMap) {
+        log.info(userInfoMap.toString());
         if (userInfoMap.containsKey("userBase")
                 && userInfoMap.containsKey("userName")
                 && userInfoMap.containsKey("userPhone")) {
@@ -206,13 +204,24 @@ public class AdminController {
 
     /**
      * 超管删除用户
-     *
-     * @param uid
+     *完成
+     * @param
      * @return
      */
     @PostMapping("delUser")
-    public Result delUser(@RequestBody String uid) {
-        return adminService.delUser(uid);
+    public Result delUser(@RequestBody User user) {
+        log.info("uid++++++++++++++++"+user.getUserId());
+        return adminService.delUser(String.valueOf(user.getUserId()));
+    }
+
+    /**
+     * 超管修改用户信息
+     *
+     */
+    @PostMapping("restUserInfo")
+    public Result restUserInfo(@RequestBody User user){
+        adminService.updateUserInfo(user);
+        return Result.success();
     }
 
     /**
