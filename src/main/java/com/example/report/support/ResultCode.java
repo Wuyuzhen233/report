@@ -1,32 +1,55 @@
+
 package com.example.report.support;
 
-/**
- * Created by wangyuan on 2018/11/22.
- */
 public enum ResultCode {
-    SUCCESS(200, "成功"),
-    EXCEPTION(500, "系统异常"),
-    FAIL(-1, "失败"),
-    UNLOGIN(-2, "未登录");
 
+    /**
+     * (保留码) 表示未知异常
+     */
+    UNEXCEPTED(9999),
 
-    private Integer code;
-    private String msg;
+    /**
+     * 成功
+     */
+    SUCCESS(1000),
 
-    private ResultCode(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    /**
+     * 用户未登录
+     */
+    USER_NOT_LOGIN(1001),
+
+    /**
+     * 用户不存在
+     */
+    USER_NOT_EXISTS(1002),
+
+    /**
+     * 入库失败
+     */
+    FAIL_DATABASE(1003),
+
+    /**
+     * 登录信息不完整
+     */
+    LOGIN_INFO_INCOMPLETE(1004),
+
+    /**
+     * 入参不完整
+     */
+    PARAMS_INCOMPLETE(1005),
+    /**
+     * 没有权限
+     */
+    NOT_HAVE_AUTHORITY(1006);
+
+    private int value;
+
+    private ResultCode(int value) {
+        this.value = value;
     }
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
+    public int getValue() {
+        return value;
     }
 }
+

@@ -2,18 +2,16 @@ package com.example.report.action;
 
 
 
-import com.example.report.common.enums.ErrorCode;
-import com.example.report.common.utils.DateUtil;
+import com.example.report.support.ResultCode;
+import com.example.report.utils.DateUtil;
 import com.example.report.domain.DTO.*;
 import com.example.report.domain.User;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.service.AuditingService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,9 +86,9 @@ public class AuditingController {
         int uid=user.getUserId();
         int userNum=auditingService.showAuthority(uid);
         if(userNum!=0){
-            return Result.success(ErrorCode.SUCCESS);
+            return Result.success(ResultCode.SUCCESS);
         }else{
-            return Result.failed(ErrorCode.NOT_HAVE_AUTHORITY,"没有权限");
+            return Result.failed(ResultCode.NOT_HAVE_AUTHORITY,"没有权限");
         }
 
     }
@@ -106,10 +104,10 @@ public class AuditingController {
 //        try {
 //            auditingService.notPass(notPassDTO.getUid(),notPassDTO.getWid(),auditingTime);
 //        }catch (Exception e){
-//            return Result.failed(ErrorCode.FAIL_DATABASE,"驳回失败");
+//            return Result.failed(ResultCode.FAIL_DATABASE,"驳回失败");
 //        }
 //
-//        return Result.success(ErrorCode.SUCCESS);
+//        return Result.success(ResultCode.SUCCESS);
 //    }
 
 //    @GetMapping("/passAllAuditingMessages")
@@ -126,7 +124,7 @@ public class AuditingController {
 //        for(Long wid:passDTO.getPassList()){
 //            auditingService.saveAuditingMessages(uid,wid,auditingTime);
 //        }
-//        return Result.success(ErrorCode.SUCCESS);
+//        return Result.success(ResultCode.SUCCESS);
 //
 //    }
 
@@ -152,7 +150,7 @@ public class AuditingController {
         for(String wid:auditingMessageDTO.getNotPassList()){
             auditingService.notPass(uid,Long.parseLong(wid),auditingTime);
         }
-        return Result.success(ErrorCode.SUCCESS);
+        return Result.success(ResultCode.SUCCESS);
 
     }
 

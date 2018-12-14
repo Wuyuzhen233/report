@@ -1,11 +1,11 @@
 package com.example.report.service.impl;
 
-import com.example.report.common.enums.ErrorCode;
-import com.example.report.common.utils.DateUtil;
+import com.example.report.support.ResultCode;
+import com.example.report.utils.DateUtil;
 import com.example.report.domain.DTO.DealedLeaderInfoDTO;
 import com.example.report.domain.DTO.UpManagerDTO;
 import com.example.report.domain.DTO.UpParticipantDTO;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.mapper.LeaderMapper;
 import com.example.report.service.LeaderService;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +80,7 @@ public class LeaderServiceImpl implements LeaderService {
 
             return Result.success(dealedLeaderInfoList);
         } catch (Exception e) {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "查询数据库失败");
+            return Result.failed(ResultCode.FAIL_DATABASE, "查询数据库失败");
         }
     }
 
@@ -122,14 +122,14 @@ public class LeaderServiceImpl implements LeaderService {
             if(leaderstatus==1){
                 List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
                 log.info("participantsInfoList___________________"+participantsInfoList);
-                return Result.failed(ErrorCode.FAIL_DATABASE," 用户已存在",participantsInfoList);
+                return Result.failed(ResultCode.FAIL_DATABASE," 用户已存在",participantsInfoList);
             }else{
                 List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
                 return Result.success(participantsInfoList);
             }
 
         } else {
-            return Result.failed(ErrorCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
+            return Result.failed(ResultCode.FAIL_DATABASE, "数据库中upm数据异常，请核查");
         }
     }
 
@@ -148,7 +148,7 @@ public class LeaderServiceImpl implements LeaderService {
             return Result.success(participantsInfoList);
         } catch (Exception e) {
             List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(delMemberParamMap.get("p_id"));
-            return Result.failed(ErrorCode.FAIL_DATABASE, "删除用户失败",participantsInfoList);
+            return Result.failed(ResultCode.FAIL_DATABASE, "删除用户失败",participantsInfoList);
         }
     }
 

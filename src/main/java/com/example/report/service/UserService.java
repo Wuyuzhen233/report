@@ -1,7 +1,7 @@
 package com.example.report.service;
 
 import com.example.report.domain.User;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 
 public interface UserService {
     User userLogin(String phone, String password);
