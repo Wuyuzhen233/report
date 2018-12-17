@@ -1,11 +1,11 @@
-package com.example.report.helper;
+package com.example.report.support;
 
 
-import com.example.report.common.AppException;
-import com.example.report.common.enums.ErrorCode;
-import com.example.report.common.utils.SpringContextUtil;
-
-public class Result<T> {
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONType;
+import com.example.report.utils.SpringContextUtil;
+@JSONType(orders = {"code", "data", "message"})
+public class Result<T> extends JSON {
 
   private int code;
   private T data;
@@ -16,11 +16,11 @@ public class Result<T> {
   }
 
   private Result(T data) {
-    this.code = ErrorCode.SUCCESS.getValue();
+    this.code = ResultCode.SUCCESS.getValue();
     this.data = data;
   }
 
-  private Result(ErrorCode code, String message) {
+  private Result(ResultCode code, String message) {
     ValidateMessageParser vm = SpringContextUtil.getBean(ValidateMessageParser.class);
     if (vm != null) {
       message = vm.parseMessage(code, message);
@@ -29,7 +29,7 @@ public class Result<T> {
     this.message = message;
   }
 
-  private Result(ErrorCode code, String message, T data) {
+  private Result(ResultCode code, String message, T data) {
     ValidateMessageParser vm = SpringContextUtil.getBean(ValidateMessageParser.class);
     if (vm != null) {
       message = vm.parseMessage(code, message);
@@ -78,7 +78,7 @@ public class Result<T> {
     if (e instanceof AppException) {
       return fail((AppException) e);
     } else {
-      return new Result(ErrorCode.UNEXCEPTED, null);
+      return new Result(ResultCode.UNEXCEPTED, null);
     }
   }
 
@@ -86,13 +86,13 @@ public class Result<T> {
     return new Result(e.getCode(), e.getMessage());
   }
 
-  public static Result failed(ErrorCode errorCode, String message) {
-    return new Result(errorCode, message);
+  public static Result failed(ResultCode resultCode, String message) {
+    return new Result(resultCode, message);
 
   }
 
-  public static <U> Result<U> failed(ErrorCode errorCode, String message, U data) {
-    return new Result(errorCode, message, data);
+  public static <U> Result<U> failed(ResultCode resultCode, String message, U data) {
+    return new Result(resultCode, message, data);
 
   }
 }

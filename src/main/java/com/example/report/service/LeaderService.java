@@ -1,6 +1,6 @@
 package com.example.report.service;
 
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 
 import java.util.List;
 import java.util.Map;

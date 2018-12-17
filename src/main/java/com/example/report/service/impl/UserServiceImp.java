@@ -1,12 +1,11 @@
 package com.example.report.service.impl;
 
-import com.example.report.common.enums.ErrorCode;
+import com.example.report.support.ResultCode;
 import com.example.report.domain.User;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.mapper.UserMapper;
 import com.example.report.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -62,7 +61,7 @@ public class UserServiceImp implements UserService {
             return Result.success();
         } else {
             log.error("通过手机号密码更改密码异常。\t新密码：{}长度为零", oldPassword);
-            return Result.failed(ErrorCode.FAIL_DATABASE, "用户修改密码异常");
+            return Result.failed(ResultCode.FAIL_DATABASE, "用户修改密码异常");
         }
     }
 

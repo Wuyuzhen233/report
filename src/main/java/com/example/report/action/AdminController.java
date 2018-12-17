@@ -1,9 +1,9 @@
 package com.example.report.action;
 
-import com.example.report.common.enums.ErrorCode;
+import com.example.report.support.ResultCode;
 import com.example.report.domain.DTO.*;
 import com.example.report.domain.User;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ public class AdminController {
     @PostMapping("showAllUserInfo")
     public Result showAllUserInfo() {
         List<Map<String, String>> userInfoList = adminService.showAllUserInfo();
-        log.info("############ controller admin/showAllUserInfo userInfoList{}+++++++++++++"+ userInfoList);
+        log.info("############ controller admin/showAllUserInfo userInfoList{}", userInfoList);
         return Result.success(userInfoList);
     }
 
@@ -102,21 +102,27 @@ public class AdminController {
      * http://192.168.1.115:8082/report/admin/updateProjectStatus
      * {"pid":1,"status":2,"uppid":3,"upmid":4}
      *完成
-     * @param projectStatusMap
+     * @param projectStstusDTO
      * @return
      */
     @PostMapping("updateProjectStatus")
-    public Result updateProjectStatus(@RequestBody ProjectStstusDTO projectStatusMap) {
-        log.info(projectStatusMap.toString());
-
-            log.warn("############ controller /admin/updateProjectStatus projectStatusMap:{}", projectStatusMap);
+    public Result updateProjectStatus(@RequestBody ProjectStstusDTO projectStstusDTO) {
+        log.info(projectStstusDTO.toString());
+        if (1==1
+//                projectStstusDTO.getPid()
+//                && projectStstusDTO.getStatus()
+//                && projectStstusDTO.getUppIdList()
+//                && projectStstusDTO.getUpmIdList()
+                ) {
+            log.warn("############ controller /admin/updateProjectStatus projectStatusMap:{}", projectStstusDTO);
             try {
-
-                return adminService.updateProjectStatus(projectStatusMap);
+                return adminService.updateProjectStatus(projectStstusDTO);
             } catch (Exception e) {
-                return Result.failed(ErrorCode.FAIL_DATABASE, "更新项目状态失败");
+                return Result.failed(ResultCode.FAIL_DATABASE, "更新项目状态失败");
             }
-
+        } else {
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "入参不完整");
+        }
     }
 
     /**
@@ -137,7 +143,7 @@ public class AdminController {
             }
             return Result.success();
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "缺少必要字段pid");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "缺少必要字段pid");
         }
     }
 
@@ -155,10 +161,10 @@ public class AdminController {
             try {
                 return adminService.cheakLeaderIsExist(addLeaderParamMap);
             } catch (Exception e) {
-                return Result.failed(ErrorCode.FAIL_DATABASE, "数据操作失败");
+                return Result.failed(ResultCode.FAIL_DATABASE, "数据操作失败");
             }
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "入参不完整");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "入参不完整");
         }
     }
 
@@ -177,10 +183,10 @@ public class AdminController {
             try {
                 return adminService.delLeaderInProject(delLeaderParamMap);
             } catch (Exception e) {
-                return Result.failed(ErrorCode.FAIL_DATABASE, "数据操作失败");
+                return Result.failed(ResultCode.FAIL_DATABASE, "数据操作失败");
             }
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "入参不完整");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "入参不完整");
         }
     }
 
@@ -198,7 +204,7 @@ public class AdminController {
                 && userInfoMap.containsKey("userPhone")) {
             return adminService.saveUser(userInfoMap);
         } else {
-            return Result.failed(ErrorCode.PARAMS_INCOMPLETE, "缺少必要参数");
+            return Result.failed(ResultCode.PARAMS_INCOMPLETE, "缺少必要参数");
         }
     }
 

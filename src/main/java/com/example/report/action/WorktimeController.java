@@ -3,21 +3,18 @@ package com.example.report.action;
 
 
 
-import com.example.report.common.enums.ErrorCode;
-import com.example.report.common.utils.DateUtil;
+import com.example.report.support.ResultCode;
+import com.example.report.utils.DateUtil;
 import com.example.report.domain.DTO.ProjectDTO;
 import com.example.report.domain.DTO.UserWorktimeDTO;
 import com.example.report.domain.DTO.WorktimeDTO;
 import com.example.report.domain.DTO.WorktimeReportDTO;
-import com.example.report.domain.Worktime;
-import com.example.report.helper.Result;
+import com.example.report.support.Result;
 import com.example.report.service.WorktimeService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @CrossOrigin
@@ -64,9 +61,9 @@ public class WorktimeController {
             }
             worktimeService.saveWorktimeReporting(worktimeList);
 
-            return Result.success(ErrorCode.SUCCESS);
+            return Result.success(ResultCode.SUCCESS);
         }catch(Exception e){
-            return  Result.failed(ErrorCode.FAIL_DATABASE,"提交失败");
+            return  Result.failed(ResultCode.FAIL_DATABASE,"提交失败");
         }
 
     }

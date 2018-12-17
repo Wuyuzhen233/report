@@ -1,4 +1,4 @@
-package com.example.report.common.utils;
+package com.example.report.utils;
 
 public class IdGenUtils {
 
