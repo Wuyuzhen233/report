@@ -126,6 +126,7 @@ public class AdminServiceImpl implements AdminService {
             //adminMapper.updateUPPStatus(projectStatusMap.get("uppid"));
             // 成员项目管理关系表中状态(upp_status)变更为关闭(0)
             for(int i=0;i<upmIdList.size();i++ ){
+                log.info("成员项目管理关系表中状态(upp_status)变更为关闭(0)"+upmIdList.get(i),status);
                 adminMapper.updateUPMStatus(upmIdList.get(i),status);
             }
             //adminMapper.updateUPMStatus(projectStatusMap.get("upmid"));
@@ -172,7 +173,6 @@ public class AdminServiceImpl implements AdminService {
     public Result cheakLeaderIsExist(Map<String, String> addLeaderParamMap) {
         List<Map<String, String>> resMapList = adminMapper.checkLeaderIsExist(addLeaderParamMap);
         int num = resMapList.size();
-        int fistNum=adminMapper.getUPParticipantTotal();
         if (num == 0) {// 若resMapList长度为零，表示不存在该用户，则需要新增
             int upManagerId = adminMapper.getUPManagerTotal() + 1;
             Map<String, String> upmParamMap = new HashMap<>();
@@ -196,7 +196,7 @@ public class AdminServiceImpl implements AdminService {
             Map<String, String> upmParamMap = new HashMap<>();
             upmParamMap.put("uid", addLeaderParamMap.get("u_id"));
             upmParamMap.put("pid", String.valueOf(addLeaderParamMap.get("p_id")));
-            upmParamMap.put("upm_status", "1");
+            upmParamMap.put("status", "1");
             adminMapper.updateUPMStatusPersonal(upmParamMap);
             adminMapper.updateUPPStatusPersonal(upmParamMap);
 

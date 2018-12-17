@@ -4,6 +4,7 @@ import com.example.report.domain.DTO.UpParticipantDTO;
 import com.example.report.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ public interface LeaderMapper {
     void updateUPPStatusPersonal(Map<String, String> uppParamMap);
 
     void delUserInUPP(Map<String, String> map);
+
+    int getParticipantStatus( @Param("uid") int uid,@Param("pid") int pid);
 
 
 }

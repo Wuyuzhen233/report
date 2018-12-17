@@ -39,10 +39,10 @@
         </trim>
     </insert>
     <insert id="addUPManager" parameterType="java.util.Map">
-        INSERT INTO rt_up_manager (upm_id, u_id, p_id) VALUES (#{upManagerId}, #{userId}, #{projectId})
+        INSERT INTO rt_up_manager (upm_id, u_id, p_id,upm_status) VALUES (#{upManagerId}, #{userId}, #{projectId},1)
     </insert>
     <insert id="addUPParticipant" parameterType="java.util.Map">
-        INSERT INTO rt_up_participant (upp_id, u_id, p_id, upp_starttime) VALUES (#{upParticipantId}, #{userId}, #{projectId}, #{startTime})
+        INSERT INTO rt_up_participant (upp_id, u_id, p_id, upp_starttime,upp_status) VALUES (#{upParticipantId}, #{userId}, #{projectId}, #{startTime},1)
     </insert>
 
     <select id="getProjectTotal" resultType="java.lang.Integer">
@@ -110,7 +110,7 @@
         UPDATE rt_up_manager SET upm_status = #{status} WHERE upm_id = #{upmid}
     </update>
     <update id="updateUPPStatusPersonal" parameterType="java.util.Map">
-        UPDATE rt_up_participant SET upp_status = #{upm_status} WHERE p_id = #{pid} AND u_id = #{uid}
+        UPDATE rt_up_participant SET upp_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
     </update>
     <update id="updateUPMStatusPersonal" parameterType="java.util.Map">
         UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
@@ -188,6 +188,6 @@
     </select>
 
     <update id="updateUserInfo" parameterType="java.util.Map">
-        update rt_user set u_base=#{userBase},u_name=#{userName},u_phone=#{userPhone},u_password=#{userPassword} where u_is=#{userId}
+        update rt_user set u_base=#{userBase},u_name=#{userName},u_phone=#{userPhone},u_password=#{userPassword} where u_id=#{userId}
     </update>
 </mapper>

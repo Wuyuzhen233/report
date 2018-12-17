@@ -74,6 +74,7 @@ public class WorktimeController {
 //        UserWorktimeDTO userWorktimeDTO=new UserWorktimeDTO();
 //        userWorktimeDTO.setUid(2);
 //        userWorktimeDTO.setDate("2018/12/05");
+        log.info(userWorktimeDTO.toString());
 
         String date=null;
 
@@ -86,6 +87,7 @@ public class WorktimeController {
 
         List<String> failList=worktimeService.showFailList(uid);
         List<ProjectDTO> projectList=worktimeService.showProjectList(uid,date);
+        log.info("projectList"+projectList);
         List<ProjectDTO> editList=new LinkedList<>();
         List<Integer> stateList=new LinkedList<>();
         List<ProjectDTO> onlyRead=new LinkedList<>();
@@ -93,14 +95,15 @@ public class WorktimeController {
         List<ProjectDTO> messageList=new LinkedList<>();
         workTimeDTO.setFailList(failList);
         for(ProjectDTO message:projectList){
-            stateList.add(message.getWstate());
             if(message.getWdate()==null||message.equals(null)){
                 //状态5还没填写
                 message.setWstate(5);
                 message.setUid(uid);
                 message.setWdate(date);
             }
+            stateList.add(message.getWstate());
         }
+        log.info("stateList"+stateList.toString());
         if(stateList.contains(0)){
             editList.addAll(projectList);
         }else if(stateList.contains(1)){
@@ -112,6 +115,7 @@ public class WorktimeController {
         for(ProjectDTO message:editList){
             //status=1可改，status=0不可改
             message.setStatus(1);
+            log.info("调用一次");
         }
         for(ProjectDTO message:onlyRead){
             message.setStatus(0);
@@ -120,6 +124,7 @@ public class WorktimeController {
         messageList.addAll(onlyRead);
         workTimeDTO.setProjectList(messageList);
         log.info(workTimeDTO.toString());
+        log.info("messageList"+messageList.toString());
         return Result.success(workTimeDTO);
     }
 
