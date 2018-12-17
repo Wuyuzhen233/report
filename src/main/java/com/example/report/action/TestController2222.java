@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("test2")
 @Slf4j
-public class TestController2 {
+public class TestController2222 {
     @PostMapping("show")
     public String show() {
         return "public without permission";

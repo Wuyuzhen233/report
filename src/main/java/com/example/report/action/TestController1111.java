@@ -15,31 +15,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("test")
 @Slf4j
-public class TestController {
+public class TestController1111 {
 
     @PostMapping("twoRole")
     @PreAuthorize("hasRole('ADMIN') or hasRole('LEADER')")
-    public String twoRole(){
+    public String twoRole() {
         return "two role share";
     }
 
     @PostMapping("admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public String admin(){
+    public String admin() {
         return "admin admin admin";
     }
+
     @PostMapping("leader")
     @PreAuthorize("hasRole('LEADER')")
-    public String leader(){
+    public String leader() {
         return "leader leader";
     }
+
     @PostMapping("user")
     @PreAuthorize("hasRole('USER')")
-    public String user(){
+    public String user() {
         return "user";
     }
+
     @PostMapping("show")
-    public String show(){
+    public String show() {
         return "show with permission";
     }
 }
