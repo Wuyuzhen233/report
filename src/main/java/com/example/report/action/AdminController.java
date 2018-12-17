@@ -44,7 +44,7 @@ public class AdminController {
     /**
      * 展示所有项目
      * http://192.168.1.115:8082/report/admin/showAllProject
-     *完成
+     *多次查询效率慢
      * @return
      */
     @PostMapping("showAllProject")
@@ -55,7 +55,7 @@ public class AdminController {
             List<LeaderInfoDTO> projectLeader=adminService.showLeaderInfo(p_id);
             rootProjectDTO.setProjectLeader(projectLeader);
        }
-       log.info(rootProjectDTOList.toString());
+       //log.info(rootProjectDTOList.toString());
 //        Map<String, List> lists=new HashMap<>();
        // return null;
         //List<Map<String, String>> projectList = adminService.showAllProject();
@@ -68,7 +68,7 @@ public class AdminController {
         ShowAllProjectDTO lists=new ShowAllProjectDTO();
         lists.setUserList(userList);
         lists.setRootProjectDTOList(rootProjectDTOList);
-        log.info("############ controller admin/showAllProject resMap{}", lists);
+        //log.info("############ controller admin/showAllProject resMap{}", lists);
         return Result.success(lists);
     }
 

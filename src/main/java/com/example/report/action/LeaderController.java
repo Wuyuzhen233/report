@@ -76,14 +76,19 @@ public class LeaderController {
     /**
      * 添加成员，区别于admin的增加需要维护upp和upm，此处仅需要对upp维护
      *
-     * @param addMemberParamMap
+     * @param
      * @return
      */
-    @PostMapping("addMember")
-    public Result addMember(@RequestBody Map<String, String> addMemberParamMap) {
+    @GetMapping("addMember")
+    public Result addMember() {
+        //@RequestBody Map<String, String> addMemberParamMap
+        Map<String, String> addMemberParamMap=new HashMap<>();
+        addMemberParamMap.put("u_id","2");
+        addMemberParamMap.put("p_id","6");
         log.info("addMemberParamMap:"+addMemberParamMap);
         if (addMemberParamMap.containsKey("p_id") && addMemberParamMap.containsKey("u_id")) {
             try {
+
                 return leaderService.cheakMemberIsExist(addMemberParamMap);
             } catch (Exception e) {
                 return Result.failed(ErrorCode.FAIL_DATABASE, "数据操作失败");

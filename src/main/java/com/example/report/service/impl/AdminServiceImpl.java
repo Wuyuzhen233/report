@@ -196,7 +196,7 @@ public class AdminServiceImpl implements AdminService {
             Map<String, String> upmParamMap = new HashMap<>();
             upmParamMap.put("uid", addLeaderParamMap.get("u_id"));
             upmParamMap.put("pid", String.valueOf(addLeaderParamMap.get("p_id")));
-            upmParamMap.put("upm_status", "1");
+            upmParamMap.put("status", "1");
             adminMapper.updateUPMStatusPersonal(upmParamMap);
             adminMapper.updateUPPStatusPersonal(upmParamMap);
 

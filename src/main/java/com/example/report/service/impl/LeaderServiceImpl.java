@@ -92,12 +92,11 @@ public class LeaderServiceImpl implements LeaderService {
 
     @Override
     public Result cheakMemberIsExist(Map<String, String> addMemberParamMap) {
-        int leaderstatus=leaderMapper.getParticipantStatus(Integer.parseInt(addMemberParamMap.get("u_id")),Integer.parseInt(addMemberParamMap.get("p_id")));
+
         List<Map<String, String>> resMapList = leaderMapper.cheakMemberIsExist(addMemberParamMap);
         int num = resMapList.size();
         //int fistNum=leaderMapper.getUPParticipantTotal();
 
-        log.info("status"+leaderstatus+"num"+num);
         if (num == 0) {// 若resMapList长度为零，表示不存在该用户，则需要新增
             int upParticipantId = leaderMapper.getUPParticipantTotal() + 1;
             Map<String, String> uppParamMap = new HashMap<>();
@@ -119,6 +118,7 @@ public class LeaderServiceImpl implements LeaderService {
             leaderMapper.updateUPPStatusPersonal(uppParamMap);
             log.info("================ AdminServiceImpl cheakLeaderIsExist 为改用户更改upp和upm关系成功");
             //int finalNum=leaderMapper.getUPParticipantTotal();
+            int leaderstatus=leaderMapper.getParticipantStatus(Integer.parseInt(addMemberParamMap.get("u_id")),Integer.parseInt(addMemberParamMap.get("p_id")));
             if(leaderstatus==1){
                 List<UpParticipantDTO> participantsInfoList = leaderMapper.getAllParticipants(addMemberParamMap.get("p_id"));
                 log.info("participantsInfoList___________________"+participantsInfoList);

@@ -110,7 +110,7 @@
         UPDATE rt_up_manager SET upm_status = #{status} WHERE upm_id = #{upmid}
     </update>
     <update id="updateUPPStatusPersonal" parameterType="java.util.Map">
-        UPDATE rt_up_participant SET upp_status = #{upm_status} WHERE p_id = #{pid} AND u_id = #{uid}
+        UPDATE rt_up_participant SET upp_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
     </update>
     <update id="updateUPMStatusPersonal" parameterType="java.util.Map">
         UPDATE rt_up_manager SET upm_status = #{status} WHERE p_id = #{pid} AND u_id = #{uid}
